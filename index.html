@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>여행 일정표</title>
+  <style>
+    /* ===== 기본 세팅 ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    body {
+      font-family: "Pretendard", "Inter", sans-serif;
+      background: linear-gradient(135deg, #f4f7fa 0%, #eef2f7 100%);
+      margin: 60px auto;
+      padding: 0 20px;
+      max-width: 1000px;
+      color: #2d3436;
+    }
+
+    /* ===== 제목 ===== */
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: -0.02em;
+      margin-bottom: 35px;
+      background: linear-gradient(90deg, #0078d7, #00a0e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ===== 버튼 컨테이너 ===== */
+    .btn-container {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #0078d7, #00a0e9);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      margin: 0 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0, 120, 215, 0.2);
+      transition: all 0.25s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
+    }
+
+    /* ===== 테이블 ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    thead tr {
+      background: linear-gradient(90deg, #0078d7, #00a0e9);
+      color: white;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 15px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    tbody tr {
+      transition: background-color 0.25s ease, transform 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f0faff;
+      transform: scale(1.005);
+    }
+
+    td[contenteditable="true"] {
+      background-color: #fffdf5;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    td[contenteditable="true"]:focus {
+      outline: 2px solid #00a0e9;
+      background-color: #ffffff;
+    }
+
+    /* ===== 알림 스타일 ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #alertBox {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #0078d7, #00a0e9);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 14px;
+      box-shadow: 0 6px 20px rgba(0, 120, 215, 0.25);
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✈️ 여행 일정표</h1>
+
+  <div class="btn-container">
+    <button onclick="addRow()">＋ 행 추가</button>
+    <button onclick="deleteRow()">－ 행 삭제</button>
+    <button onclick="saveTable()">💾 저장</button>
+    <button onclick="loadTable()">📂 불러오기</button>
+    <button onclick="resetTable()">🧹 초기화</button>
+  </div>
+
+  <table id="scheduleTable">
+    <thead>
+      <tr>
+        <th>시간</th>
+        <th>일정</th>
+        <th>이동수단</th>
+        <th>비고</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td contenteditable="true">07:00</td><td contenteditable="true">우리 집 출발</td><td contenteditable="true">택시</td><td contenteditable="true">1시간</td></tr>
+      <tr><td contenteditable="true">08:00</td><td contenteditable="true">인천공항 도착</td><td contenteditable="true">-</td><td contenteditable="true">출국 수속</td></tr>
+      <tr><td contenteditable="true">08:00 ~ 09:00</td><td contenteditable="true">인천공항 자연한식당 아침식사</td><td contenteditable="true">-</td><td contenteditable="true">1시간 여유</td></tr>
+      <tr><td contenteditable="true">09:00 ~ 11:12</td><td contenteditable="true">✈️ 인천공항 → 베이징 서우두공항(PEK)</td><td contenteditable="true">비행기</td><td contenteditable="true">2시간 12분</td></tr>
+      <tr><td contenteditable="true">11:12</td><td contenteditable="true">베이징 서우두공항 도착</td><td contenteditable="true">-</td><td contenteditable="true">입국 수속 약 40분</td></tr>
+      <tr><td contenteditable="true">10:52 ~ 11:28</td><td contenteditable="true">공항 → 만다린 그릴+바</td><td contenteditable="true">택시</td><td contenteditable="true">약 36분</td></tr>
+      <tr><td contenteditable="true">11:28 ~ 12:28</td><td contenteditable="true">점심식사 (만다린 그릴+바)</td><td contenteditable="true">-</td><td contenteditable="true">1시간</td></tr>
+      <tr><td contenteditable="true">12:28 ~ 12:43</td><td contenteditable="true">만다린 그릴+바 → 양상후통 호텔</td><td contenteditable="true">택시</td><td contenteditable="true">15분</td></tr>
+      <tr><td contenteditable="true">12:43 ~ 13:20</td><td contenteditable="true">호텔 체크인 및 휴식</td><td contenteditable="true">-</td><td contenteditable="true">약 40분</td></tr>
+      <tr><td contenteditable="true">13:20 ~ 13:57</td><td contenteditable="true">호텔 → 스징산 유락원</td><td contenteditable="true">택시</td><td contenteditable="true">37분</td></tr>
+      <tr><td contenteditable="true">13:57 ~ 17:57</td><td contenteditable="true">스징산 유락원 즐기기 🎢</td><td contenteditable="true">-</td><td contenteditable="true">약 4시간</td></tr>
+      <tr><td contenteditable="true">17:57 ~ 18:40</td><td contenteditable="true">스징산 유락원 → 왕푸징 야시장</td><td contenteditable="true">택시</td><td contenteditable="true">약 40분</td></tr>
+      <tr><td contenteditable="true">18:40 ~ 19:00</td><td contenteditable="true">왕푸징 야시장 구경 / 쇼핑</td><td contenteditable="true">-</td><td contenteditable="true">약 20분</td></tr>
+      <tr><td contenteditable="true">19:00 ~ 19:15</td><td contenteditable="true">왕푸징 → 양상후통 호텔</td><td contenteditable="true">택시</td><td contenteditable="true">약 15분</td></tr>
+      <tr><td contenteditable="true">19:15 ~ 19:45</td><td contenteditable="true">호텔 도착 및 정리</td><td contenteditable="true">-</td><td contenteditable="true">휴식 30분</td></tr>
+      <tr><td contenteditable="true">19:45 ~ 20:45</td><td contenteditable="true">저녁식사 (호텔 인근 식당)</td><td contenteditable="true">-</td><td contenteditable="true">1시간</td></tr>
+      <tr><td contenteditable="true">20:45 ~ 20:55</td><td contenteditable="true">호텔 귀환 / 휴식 준비</td><td contenteditable="true">-</td><td contenteditable="true">자유시간 전 준비</td></tr>
+    </tbody>
+  </table>
+
+  <div id="alertBox"></div>
+
+  <script>
+    const table = document.getElementById("scheduleTable").getElementsByTagName("tbody")[0];
+    const alertBox = document.getElementById("alertBox");
+
+    function showAlert(message) {
+      alertBox.textContent = message;
+      alertBox.style.display = "block";
+      setTimeout(() => alertBox.style.display = "none", 2000);
+    }
+
+    function addRow() {
+      const newRow = table.insertRow();
+      for (let i = 0; i < 4; i++) {
+        const cell = newRow.insertCell(i);
+        cell.contentEditable = "true";
+        cell.innerText = "";
+      }
+      showAlert("새로운 행이 추가되었습니다.");
+    }
+
+    function deleteRow() {
+      if (table.rows.length > 0) {
+        table.deleteRow(table.rows.length - 1);
+        showAlert("마지막 행이 삭제되었습니다.");
+      }
+    }
+
+    function saveTable() {
+      const data = [];
+      for (let row of table.rows) {
+        const cells = Array.from(row.cells).map(cell => cell.innerText);
+        data.push(cells);
+      }
+      localStorage.setItem("travelSchedule", JSON.stringify(data));
+      showAlert("💾 일정이 저장되었습니다!");
+    }
+
+    function loadTable() {
+      const saved = localStorage.getItem("travelSchedule");
+      if (!saved) return showAlert("📭 저장된 일정이 없습니다.");
+      const data = JSON.parse(saved);
+      table.innerHTML = "";
+      data.forEach(rowData => {
+        const row = table.insertRow();
+        rowData.forEach(text => {
+          const cell = row.insertCell();
+          cell.contentEditable = "true";
+          cell.innerText = text;
+        });
+      });
+      showAlert("📂 일정이 불러와졌습니다!");
+    }
+
+    function resetTable() {
+      if (confirm("모든 내용을 초기화하시겠습니까?")) {
+        localStorage.removeItem("travelSchedule");
+        location.reload();
+      }
+    }
+  </script>
+
+</body>
+</html>
