@@ -1,234 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>여행 일정표</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>예비번호 총 정리</title>
   <style>
-    /* ===== 기본 세팅 ===== */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-    body {
-      font-family: "Pretendard", "Inter", sans-serif;
-      background: linear-gradient(135deg, #f4f7fa 0%, #eef2f7 100%);
-      margin: 60px auto;
-      padding: 0 20px;
-      max-width: 1000px;
-      color: #2d3436;
+    body{
+      font-family: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      padding: 20px;
+      background:#f7f8fb;
+      color:#111;
+    }
+    .table-wrap{
+      max-width:980px;
+      margin:0 auto;
+      background:#fff;
+      border-radius:8px;
+      box-shadow:0 6px 18px rgba(20,20,40,0.06);
+      overflow:hidden;
+    }
+    .header{
+      padding:14px 16px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    h2{ margin:0; font-size:16px; }
+    .controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
     }
 
-    /* ===== 제목 ===== */
-    h1 {
-      text-align: center;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #1e293b;
-      letter-spacing: -0.02em;
-      margin-bottom: 35px;
-      background: linear-gradient(90deg, #0078d7, #00a0e9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* 버튼 기본 스타일 (미선택 상태) */
+    .btn{
+      padding:8px 12px;
+      border-radius:8px;
+      border:1px solid #111827;
+      background:#ffffff;
+      color:#111827;
+      font-size:13px;
+      cursor:pointer;
+      transition:0.15s;
+      box-shadow:0 2px 6px rgba(17,24,39,0.06);
     }
 
-    /* ===== 버튼 컨테이너 ===== */
-    .btn-container {
-      text-align: center;
-      margin-bottom: 25px;
+    /* 선택된 버튼 스타일 */
+    .btn.active{
+      background:#111827 !important;
+      color:#fff !important;
     }
 
-    button {
-      background: linear-gradient(135deg, #0078d7, #00a0e9);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 18px;
-      margin: 0 6px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0, 120, 215, 0.2);
-      transition: all 0.25s ease;
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    thead{
+      background:linear-gradient(90deg,#0ea5a4,#7c3aed);
+      color:#fff;
+      text-align:left;
+    }
+    thead th{
+      padding:14px 16px;
+      font-weight:700;
+    }
+    tbody td{
+      padding:12px 16px;
+      border-bottom:1px solid #eef2f6;
+      vertical-align:top;
+    }
+    tbody tr:last-child td{ border-bottom: none; }
+    .center { text-align:center; }
+
+    /* 반응형 */
+    @media (max-width:700px){
+      thead { display:none; }
+      table, tbody, tr, td { display:block; width:100%; }
+      tr { margin-bottom:10px; border-radius:6px; background:#fafafa; box-shadow:0 1px 0 rgba(0,0,0,0.02) inset; }
+      td { padding:10px 12px; border-bottom: none; }
+      td::before{
+        content: attr(data-label);
+        display:block;
+        font-weight:700;
+        margin-bottom:6px;
+        color:#555;
+      }
+      .controls{ width:100%; justify-content:flex-start; }
     }
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(0, 120, 215, 0.3);
-    }
-
-    /* ===== 테이블 ===== */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    thead tr {
-      background: linear-gradient(90deg, #0078d7, #00a0e9);
-      color: white;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: center;
-      font-size: 15px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    th {
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    tbody tr {
-      transition: background-color 0.25s ease, transform 0.2s ease;
-    }
-
-    tbody tr:hover {
-      background-color: #f0faff;
-      transform: scale(1.005);
-    }
-
-    td[contenteditable="true"] {
-      background-color: #fffdf5;
-      border-radius: 4px;
-      transition: background 0.3s;
-    }
-
-    td[contenteditable="true"]:focus {
-      outline: 2px solid #00a0e9;
-      background-color: #ffffff;
-    }
-
-    /* ===== 알림 스타일 ===== */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #alertBox {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, #0078d7, #00a0e9);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-weight: 500;
-      font-size: 14px;
-      box-shadow: 0 6px 20px rgba(0, 120, 215, 0.25);
-      display: none;
-      animation: fadeIn 0.4s ease forwards;
-    }
+    .note { padding:14px 16px; font-size:13px; color:#555; }
   </style>
 </head>
 <body>
+  <div class="table-wrap">
+    <div class="header">
+      <h2>대학·학과 예비번호 목록</h2>
 
-  <h1>✈️ 여행 일정표</h1>
+      <div class="controls" role="toolbar" aria-label="표 정렬 옵션">
+        <button class="btn" id="sortName">가나다순</button>
+        <button class="btn" id="sortAsc">예비번호 빠른 순</button>
+        <button class="btn" id="sortDesc">예비번호 늦은 순</button>
+      </div>
+    </div>
 
-  <div class="btn-container">
-    <button onclick="addRow()">＋ 행 추가</button>
-    <button onclick="deleteRow()">－ 행 삭제</button>
-    <button onclick="saveTable()">💾 저장</button>
-    <button onclick="loadTable()">📂 불러오기</button>
-    <button onclick="resetTable()">🧹 초기화</button>
+    <table id="resultTable" aria-label="대학 학과 예비번호 표">
+      <thead>
+        <tr>
+          <th>수시</th>
+          <th>대학교명</th>
+          <th>학과명</th>
+          <th class="center">예비번호</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">수원과학대학교</td>
+          <td data-label="학과명">멀티미디어디자인학과 (영상디자인전공)</td>
+          <td data-label="예비번호" class="center">13</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">경기과학기술대학교</td>
+          <td data-label="학과명">영상디자인과</td>
+          <td data-label="예비번호" class="center">85</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">경기과학기술대학교</td>
+          <td data-label="학과명">전기공학과</td>
+          <td data-label="예비번호" class="center">35</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">동서울대학교</td>
+          <td data-label="학과명">콘텐츠크리에이터과</td>
+          <td data-label="예비번호" class="center">11</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">동서울대학교</td>
+          <td data-label="학과명">시각디자인과</td>
+          <td data-label="예비번호" class="center">39</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">신구대학교</td>
+          <td data-label="학과명">영상디자인과</td>
+          <td data-label="예비번호" class="center">22</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">신안산대학교</td>
+          <td data-label="학과명">영상콘텐츠과</td>
+          <td data-label="예비번호" class="center">51</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">안산대학교</td>
+          <td data-label="학과명">광고디자인과</td>
+          <td data-label="예비번호" class="center">35</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">안산대학교</td>
+          <td data-label="학과명">시각미디어디자인과</td>
+          <td data-label="예비번호" class="center">32</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">오산대학교</td>
+          <td data-label="학과명">디지털콘텐츠디자인계열 (영상미디어전공)</td>
+          <td data-label="예비번호" class="center">98</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">장안대학교</td>
+          <td data-label="학과명">영상미디어콘텐츠과</td>
+          <td data-label="예비번호" class="center"></td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">유한대학교</td>
+          <td data-label="학과명">시각디자인과</td>
+          <td data-label="예비번호" class="center">36</td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">부천대학교</td>
+          <td data-label="학과명">디지털미디어디자인학과</td>
+          <td data-label="예비번호" class="center"></td>
+        </tr>
+
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">동양미래대학교</td>
+          <td data-label="학과명">시각디자인과</td>
+          <td data-label="예비번호" class="center">84</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">연성대학교</td>
+          <td data-label="학과명">치기공과</td>
+          <td data-label="예비번호" class="center">142</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">연성대학교</td>
+          <td data-label="학과명">시각디자인과</td>
+          <td data-label="예비번호" class="center">33</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">대림대학교</td>
+          <td data-label="학과명">전기과</td>
+          <td data-label="예비번호" class="center">28</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">신안산대학교</td>
+          <td data-label="학과명">전기과</td>
+          <td data-label="예비번호" class="center">26</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">부천대학교</td>
+          <td data-label="학과명">치기공과</td>
+          <td data-label="예비번호" class="center">178</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 1차</td>
+          <td data-label="대학교명">동남보건대학교</td>
+          <td data-label="학과명">치기공과</td>
+          <td data-label="예비번호" class="center">312</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">재능대학교</td>
+          <td data-label="학과명">사진영상미디어과</td>
+          <td data-label="예비번호" class="center">12</td>
+        </tr>
+        
+        <tr>
+          <td data-label="수시">수시 2차</td>
+          <td data-label="대학교명">국제대학교</td>
+          <td data-label="학과명">문화예술콘텐츠학과</td>
+          <td data-label="예비번호" class="center"></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <table id="scheduleTable">
-    <thead>
-      <tr>
-        <th>시간</th>
-        <th>일정</th>
-        <th>이동수단</th>
-        <th>비고</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td contenteditable="true">07:00</td><td contenteditable="true">우리 집 출발</td><td contenteditable="true">택시</td><td contenteditable="true">1시간</td></tr>
-      <tr><td contenteditable="true">08:00</td><td contenteditable="true">인천공항 도착</td><td contenteditable="true">-</td><td contenteditable="true">출국 수속</td></tr>
-      <tr><td contenteditable="true">08:00 ~ 09:00</td><td contenteditable="true">인천공항 자연한식당 아침식사</td><td contenteditable="true">-</td><td contenteditable="true">1시간 여유</td></tr>
-      <tr><td contenteditable="true">09:00 ~ 11:12</td><td contenteditable="true">✈️ 인천공항 → 베이징 서우두공항(PEK)</td><td contenteditable="true">비행기</td><td contenteditable="true">2시간 12분</td></tr>
-      <tr><td contenteditable="true">11:12</td><td contenteditable="true">베이징 서우두공항 도착</td><td contenteditable="true">-</td><td contenteditable="true">입국 수속 약 40분</td></tr>
-      <tr><td contenteditable="true">10:52 ~ 11:28</td><td contenteditable="true">공항 → 만다린 그릴+바</td><td contenteditable="true">택시</td><td contenteditable="true">약 36분</td></tr>
-      <tr><td contenteditable="true">11:28 ~ 12:28</td><td contenteditable="true">점심식사 (만다린 그릴+바)</td><td contenteditable="true">-</td><td contenteditable="true">1시간</td></tr>
-      <tr><td contenteditable="true">12:28 ~ 12:43</td><td contenteditable="true">만다린 그릴+바 → 양상후통 호텔</td><td contenteditable="true">택시</td><td contenteditable="true">15분</td></tr>
-      <tr><td contenteditable="true">12:43 ~ 13:20</td><td contenteditable="true">호텔 체크인 및 휴식</td><td contenteditable="true">-</td><td contenteditable="true">약 40분</td></tr>
-      <tr><td contenteditable="true">13:20 ~ 13:57</td><td contenteditable="true">호텔 → 스징산 유락원</td><td contenteditable="true">택시</td><td contenteditable="true">37분</td></tr>
-      <tr><td contenteditable="true">13:57 ~ 17:57</td><td contenteditable="true">스징산 유락원 즐기기 🎢</td><td contenteditable="true">-</td><td contenteditable="true">약 4시간</td></tr>
-      <tr><td contenteditable="true">17:57 ~ 18:40</td><td contenteditable="true">스징산 유락원 → 왕푸징 야시장</td><td contenteditable="true">택시</td><td contenteditable="true">약 40분</td></tr>
-      <tr><td contenteditable="true">18:40 ~ 19:00</td><td contenteditable="true">왕푸징 야시장 구경 / 쇼핑</td><td contenteditable="true">-</td><td contenteditable="true">약 20분</td></tr>
-      <tr><td contenteditable="true">19:00 ~ 19:15</td><td contenteditable="true">왕푸징 → 양상후통 호텔</td><td contenteditable="true">택시</td><td contenteditable="true">약 15분</td></tr>
-      <tr><td contenteditable="true">19:15 ~ 19:45</td><td contenteditable="true">호텔 도착 및 정리</td><td contenteditable="true">-</td><td contenteditable="true">휴식 30분</td></tr>
-      <tr><td contenteditable="true">19:45 ~ 20:45</td><td contenteditable="true">저녁식사 (호텔 인근 식당)</td><td contenteditable="true">-</td><td contenteditable="true">1시간</td></tr>
-      <tr><td contenteditable="true">20:45 ~ 20:55</td><td contenteditable="true">호텔 귀환 / 휴식 준비</td><td contenteditable="true">-</td><td contenteditable="true">자유시간 전 준비</td></tr>
-    </tbody>
-  </table>
-
-  <div id="alertBox"></div>
-
   <script>
-    const table = document.getElementById("scheduleTable").getElementsByTagName("tbody")[0];
-    const alertBox = document.getElementById("alertBox");
+    // 정렬 스크립트 (버튼 스타일 active 처리 포함)
+    (function () {
+      const table = document.getElementById('resultTable');
+      const tbody = table.querySelector('tbody');
+      const btnName = document.getElementById('sortName');
+      const btnAsc = document.getElementById('sortAsc');
+      const btnDesc = document.getElementById('sortDesc');
+      const buttons = [btnName, btnAsc, btnDesc];
 
-    function showAlert(message) {
-      alertBox.textContent = message;
-      alertBox.style.display = "block";
-      setTimeout(() => alertBox.style.display = "none", 2000);
-    }
+      const getRows = () => Array.from(tbody.querySelectorAll('tr'));
 
-    function addRow() {
-      const newRow = table.insertRow();
-      for (let i = 0; i < 4; i++) {
-        const cell = newRow.insertCell(i);
-        cell.contentEditable = "true";
-        cell.innerText = "";
+      // 예비번호를 숫자로 변환 (빈칸은 Infinity로 처리)
+      function parseReserve(cellText) {
+        const t = (cellText || '').trim();
+        if (t === '') return Infinity;
+        const n = parseInt(t.replace(/[^0-9\-]/g, ''), 10);
+        return Number.isNaN(n) ? Infinity : n;
       }
-      showAlert("새로운 행이 추가되었습니다.");
-    }
 
-    function deleteRow() {
-      if (table.rows.length > 0) {
-        table.deleteRow(table.rows.length - 1);
-        showAlert("마지막 행이 삭제되었습니다.");
+      function activateButton(activeBtn) {
+        buttons.forEach(b => b.classList.remove('active'));
+        activeBtn.classList.add('active');
       }
-    }
 
-    function saveTable() {
-      const data = [];
-      for (let row of table.rows) {
-        const cells = Array.from(row.cells).map(cell => cell.innerText);
-        data.push(cells);
-      }
-      localStorage.setItem("travelSchedule", JSON.stringify(data));
-      showAlert("💾 일정이 저장되었습니다!");
-    }
-
-    function loadTable() {
-      const saved = localStorage.getItem("travelSchedule");
-      if (!saved) return showAlert("📭 저장된 일정이 없습니다.");
-      const data = JSON.parse(saved);
-      table.innerHTML = "";
-      data.forEach(rowData => {
-        const row = table.insertRow();
-        rowData.forEach(text => {
-          const cell = row.insertCell();
-          cell.contentEditable = "true";
-          cell.innerText = text;
+      function sortByNameAsc() {
+        activateButton(btnName);
+        const rows = getRows();
+        rows.sort((a, b) => {
+          const nameA = a.children[1].textContent.trim();
+          const nameB = b.children[1].textContent.trim();
+          return nameA.localeCompare(nameB, 'ko');
         });
-      });
-      showAlert("📂 일정이 불러와졌습니다!");
-    }
-
-    function resetTable() {
-      if (confirm("모든 내용을 초기화하시겠습니까?")) {
-        localStorage.removeItem("travelSchedule");
-        location.reload();
+        rows.forEach(r => tbody.appendChild(r));
       }
-    }
-  </script>
 
+      function sortByReserveAsc() {
+        activateButton(btnAsc);
+        const rows = getRows();
+        rows.sort((a, b) => {
+          const ra = parseReserve(a.children[3].textContent);
+          const rb = parseReserve(b.children[3].textContent);
+          if (ra === rb) {
+            return a.children[1].textContent.trim().localeCompare(b.children[1].textContent.trim(), 'ko');
+          }
+          return ra - rb;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+      }
+
+      function sortByReserveDesc() {
+        activateButton(btnDesc);
+        const rows = getRows();
+        rows.sort((a, b) => {
+          const ra = parseReserve(a.children[3].textContent);
+          const rb = parseReserve(b.children[3].textContent);
+          if (ra === rb) {
+            return a.children[1].textContent.trim().localeCompare(b.children[1].textContent.trim(), 'ko');
+          }
+          return rb - ra;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+      }
+
+      btnName.addEventListener('click', sortByNameAsc);
+      btnAsc.addEventListener('click', sortByReserveAsc);
+      btnDesc.addEventListener('click', sortByReserveDesc);
+
+      // 기본 정렬 = 대학교명 가나다순
+      sortByNameAsc();
+    })();
+  </script>
 </body>
 </html>
