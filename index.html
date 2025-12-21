@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>정보 복사</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #f4f6f8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  }
+
+  .container {
+    max-width: 420px;
+    margin: auto;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+
+  .value {
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+    letter-spacing: 0.4px;
+  }
+
+  .copy-btn {
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .copy-btn:hover {
+    background: #374151;
+  }
+
+  .copy-btn:active {
+    transform: scale(0.96);
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <div>
+      <div class="label">전화번호</div>
+      <div class="value" id="phone">01040846848</div>
+    </div>
+    <button class="copy-btn" onclick="copy('phone')">복사</button>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="label">생년월일</div>
+      <div class="value" id="birth">070608</div>
+    </div>
+    <button class="copy-btn" onclick="copy('birth')">복사</button>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="label">경기과학기술대학교 수험번호</div>
+      <div class="value" id="period">220874</div>
+    </div>
+    <button class="copy-btn" onclick="copy('period')">복사</button>
+  </div>
+
+  <div class="card">
+    <div>
+      <div class="label">장안대학교 수험번호</div>
+      <div class="value" id="jangan">2111100031</div>
+    </div>
+    <button class="copy-btn" onclick="copy('jangan')">복사</button>
+  </div>
+
+</div>
+
+<script>
+  function copy(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("복사 완료");
+    });
+  }
+</script>
+
+</body>
+</html>
