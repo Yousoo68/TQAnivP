@@ -18,6 +18,50 @@
     margin: auto;
   }
 
+  /* 비밀번호 카드 */
+  .lock-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px 22px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  .lock-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+  }
+
+  .lock-desc {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 20px;
+  }
+
+  .password-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    text-align: center;
+    transition: border 0.2s, box-shadow 0.2s;
+  }
+
+  .password-input:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.15);
+  }
+
+  /* 카드 영역 */
+  .content {
+    display: none;
+    margin-top: 20px;
+  }
+
   .card {
     background: #ffffff;
     border-radius: 14px;
@@ -50,7 +94,7 @@
     border-radius: 8px;
     font-size: 13px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.1s;
   }
 
   .copy-btn:hover {
@@ -67,41 +111,67 @@
 
 <div class="container">
 
-  <div class="card">
-    <div>
-      <div class="label">전화번호</div>
-      <div class="value" id="phone">01040846848</div>
-    </div>
-    <button class="copy-btn" onclick="copy('phone')">복사</button>
+  <!-- 비밀번호 입력 -->
+  <div class="lock-card" id="lock">
+    <div class="lock-title">보안 확인</div>
+    <div class="lock-desc">비밀번호를 입력하면 정보가 표시됩니다</div>
+    <input
+      type="password"
+      class="password-input"
+      placeholder="비밀번호 입력"
+      oninput="checkPassword(this.value)"
+    />
   </div>
 
-  <div class="card">
-    <div>
-      <div class="label">생년월일</div>
-      <div class="value" id="birth">070608</div>
-    </div>
-    <button class="copy-btn" onclick="copy('birth')">복사</button>
-  </div>
+  <!-- 숨겨진 내용 -->
+  <div class="content" id="content">
 
-  <div class="card">
-    <div>
-      <div class="label">경기과학기술대학교 수험번호</div>
-      <div class="value" id="period">220874</div>
+    <div class="card">
+      <div>
+        <div class="label">전화번호</div>
+        <div class="value" id="phone">01040846848</div>
+      </div>
+      <button class="copy-btn" onclick="copy('phone')">복사</button>
     </div>
-    <button class="copy-btn" onclick="copy('period')">복사</button>
-  </div>
 
-  <div class="card">
-    <div>
-      <div class="label">장안대학교 수험번호</div>
-      <div class="value" id="jangan">2111100031</div>
+    <div class="card">
+      <div>
+        <div class="label">생년월일</div>
+        <div class="value" id="birth">070608</div>
+      </div>
+      <button class="copy-btn" onclick="copy('birth')">복사</button>
     </div>
-    <button class="copy-btn" onclick="copy('jangan')">복사</button>
+
+    <div class="card">
+      <div>
+        <div class="label">경기과학기술대학교 수험번호</div>
+        <div class="value" id="period">220874</div>
+      </div>
+      <button class="copy-btn" onclick="copy('period')">복사</button>
+    </div>
+
+    <div class="card">
+      <div>
+        <div class="label">장안대학교 수험번호</div>
+        <div class="value" id="jangan">2111100031</div>
+      </div>
+      <button class="copy-btn" onclick="copy('jangan')">복사</button>
+    </div>
+
   </div>
 
 </div>
 
 <script>
+  const PASSWORD = "479173001";
+
+  function checkPassword(value) {
+    if (value === PASSWORD) {
+      document.getElementById("lock").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }
+  }
+
   function copy(id) {
     const text = document.getElementById(id).innerText;
     navigator.clipboard.writeText(text).then(() => {
