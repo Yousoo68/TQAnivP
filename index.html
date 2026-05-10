@@ -2,111 +2,71 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>정보 복사</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>용량 계산기</title>
 
 <style>
   body {
     margin: 0;
-    padding: 20px;
-    background: #f4f6f8;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
 
   .container {
-    max-width: 420px;
-    margin: auto;
+    width: 420px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
   }
 
-  /* 비밀번호 카드 */
-  .lock-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 28px 22px;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  h2 {
     text-align: center;
-  }
-
-  .lock-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 10px;
-  }
-
-  .lock-desc {
-    font-size: 13px;
-    color: #6b7280;
     margin-bottom: 20px;
   }
 
-  .password-input {
+  input[type="file"] {
     width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 10px;
-    border: 1px solid #d1d5db;
-    outline: none;
-    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #334155;
+    color: white;
+    cursor: pointer;
   }
 
-  .content {
-    display: none;
-    margin-top: 20px;
+  .list {
+    margin-top: 15px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  .list li {
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   .card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 16px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
   }
 
-  .label {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 4px;
+  .card p {
+    margin: 8px 0;
+    font-size: 14px;
   }
 
   .value {
-    font-size: 17px;
-    font-weight: 600;
-    color: #111827;
-  }
-
-  .copy-btn {
-    border: none;
-    background: #111827;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  .link-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-  }
-
-  .jangan-btn {
-    background: #2563eb;
-    color: white;
-  }
-
-  .gtec-btn {
-    background: #dc2626;
-    color: white;
+    font-weight: bold;
+    color: #38bdf8;
   }
 </style>
 </head>
@@ -114,82 +74,50 @@
 <body>
 
 <div class="container">
+  <h2>📁 용량 계산기</h2>
 
-  <!-- 비밀번호 -->
-  <div class="lock-card" id="lock">
-    <div class="lock-title">보안 확인</div>
-    <div class="lock-desc">비밀번호를 입력하면 정보가 표시됩니다</div>
-    <input type="password" class="password-input" placeholder="비밀번호 입력"
-           oninput="checkPassword(this.value)">
+  <input type="file" id="files" multiple accept="image/*,video/*">
+
+  <ul class="list" id="list"></ul>
+
+  <div class="card">
+    <p>MB: <span class="value" id="mb">0</span></p>
+    <p>GB: <span class="value" id="gb">0</span></p>
+    <p>TB: <span class="value" id="tb">0</span></p>
   </div>
-
-  <div class="content" id="content">
-
-    <!-- 전화번호 -->
-    <div class="card">
-      <div>
-        <div class="label">전화번호</div>
-        <div class="value" id="phone">01040846848</div>
-      </div>
-      <button class="copy-btn" onclick="copy('phone')">복사</button>
-    </div>
-
-    <!-- 생년월일 -->
-    <div class="card">
-      <div>
-        <div class="label">생년월일</div>
-        <div class="value" id="birth">070608</div>
-      </div>
-      <button class="copy-btn" onclick="copy('birth')">복사</button>
-    </div>
-
-    <!-- 장안대학교 수험번호 (위로 이동) -->
-    <div class="card">
-      <div>
-        <div class="label">장안대학교 수험번호</div>
-        <div class="value" id="jangan">2111100031</div>
-      </div>
-      <button class="copy-btn" onclick="copy('jangan')">복사</button>
-    </div>
-
-    <!-- 경기과학기술대학교 수험번호 (맨 아래) -->
-    <div class="card">
-      <div>
-        <div class="label">경기과학기술대학교 수험번호</div>
-        <div class="value" id="period">220874</div>
-      </div>
-      <button class="copy-btn" onclick="copy('period')">복사</button>
-    </div>
-
-    <!-- 추가 버튼 -->
-    <button class="link-btn jangan-btn"
-      onclick="location.href='https://trs01.uwayapply.com/038ZK6IOPJCO000000KARF/login'">
-      장안대학교 합격자 조회
-    </button>
-
-    <button class="link-btn gtec-btn"
-      onclick="location.href='https://www.gtec.ac.kr/ipsi/cms/FrCon/index.do?MENU_ID=610'">
-      경기과학기술대학교 문서등록 포기
-    </button>
-
-  </div>
-
 </div>
 
 <script>
-  const PASSWORD = "479173001";
+const input = document.getElementById("files");
+const list = document.getElementById("list");
 
-  function checkPassword(value) {
-    if (value === PASSWORD) {
-      document.getElementById("lock").style.display = "none";
-      document.getElementById("content").style.display = "block";
-    }
-  }
+const mbText = document.getElementById("mb");
+const gbText = document.getElementById("gb");
+const tbText = document.getElementById("tb");
 
-  function copy(id) {
-    navigator.clipboard.writeText(document.getElementById(id).innerText)
-      .then(() => alert("복사 완료"));
-  }
+input.addEventListener("change", function () {
+  list.innerHTML = "";
+
+  let totalBytes = 0;
+
+  Array.from(this.files).forEach(file => {
+    totalBytes += file.size;
+
+    const sizeMB = file.size / (1024 * 1024);
+
+    const li = document.createElement("li");
+    li.textContent = `📄 ${file.name} (${sizeMB.toFixed(2)} MB)`;
+    list.appendChild(li);
+  });
+
+  const MB = totalBytes / (1024 * 1024);
+  const GB = totalBytes / (1024 * 1024 * 1024);
+  const TB = totalBytes / (1024 * 1024 * 1024 * 1024);
+
+  mbText.textContent = MB.toFixed(2);
+  gbText.textContent = GB.toFixed(4);
+  tbText.textContent = TB.toFixed(6);
+});
 </script>
 
 </body>
