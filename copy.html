@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>읽기 전용 복사 패널</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #f4f4f4;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .panel h3 {
+      margin-top: 0;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      font-size: 14px;
+      background: #f9f9f9;
+    }
+
+    button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .copied {
+      background: #28a745 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 패널 1 -->
+    <div class="panel">
+      <h3>패널 1</h3>
+      <textarea id="text1" readonly>첫 번째 복사 내용</textarea>
+      <button onclick="copyText('text1', this)">복사하기</button>
+    </div>
+
+    <!-- 패널 2 -->
+    <div class="panel">
+      <h3>패널 2</h3>
+      <textarea id="text2" readonly>두 번째 복사 내용</textarea>
+      <button onclick="copyText('text2', this)">복사하기</button>
+    </div>
+
+    <!-- 패널 3 -->
+    <div class="panel">
+      <h3>패널 3</h3>
+      <textarea id="text3" readonly>세 번째 복사 내용</textarea>
+      <button onclick="copyText('text3', this)">복사하기</button>
+    </div>
+
+  </div>
+
+  <script>
+    function copyText(id, button) {
+      const textarea = document.getElementById(id);
+
+      navigator.clipboard.writeText(textarea.value);
+
+      const original = button.innerText;
+
+      button.innerText = "복사 완료!";
+      button.classList.add("copied");
+
+      setTimeout(() => {
+        button.innerText = original;
+        button.classList.remove("copied");
+      }, 1500);
+    }
+  </script>
+
+</body>
+</html>
