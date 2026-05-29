@@ -3,471 +3,619 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>대본</title>
+<title>최종 대본</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
-    background:#0d0d0d;
-    color:white;
-    font-family:'Pretendard', sans-serif;
+    background:#111;
+    color:#f4f4f4;
+    font-family:Pretendard, sans-serif;
     line-height:1.9;
-    padding:90px 20px 60px;
+    position:relative; /* absolute 기준점 설정 */
 }
 
-.container{
-    max-width:950px;
-    margin:auto;
-}
-
-.top-buttons{
-    position:fixed;
-    top:20px;
-    right:20px;
+/* 오른쪽 상단 absolute 배치 (스크롤 시 따라오지 않음, 가로 정렬 기본값) */
+.top-ui{
+    position:absolute;
+    top:18px;
+    right:18px;
+    z-index:999999999;
     display:flex;
     gap:12px;
-    z-index:999;
 }
 
-.top-buttons button{
-    background:#111;
-    border:2px solid #444;
-    color:white;
-    padding:12px 18px;
-    border-radius:12px;
+.control-btn{
+    border:none;
     cursor:pointer;
+    padding:14px 18px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:800;
+    color:white;
+    background:#202020;
+    transition:0.25s;
+    box-shadow:0 0 12px rgba(255,255,255,0.15);
+}
+
+.control-btn:hover{
+    transform:translateY(-2px);
+}
+
+.whisper-btn.active{
+    background:#ffe100;
+    color:#111;
+    box-shadow:
+    0 0 10px #ffe100,
+    0 0 20px #ffe100,
+    0 0 40px #ffe100;
+}
+
+.location-btn.active{
+    background:#ff3b3b;
+    box-shadow:
+    0 0 10px #ff3b3b,
+    0 0 20px #ff3b3b,
+    0 0 40px #ff3b3b;
+}
+
+/* 선택창 */
+.scene-popup{
+    position:absolute;
+    top:82px;
+    right:18px;
+    width:230px;
+    background:#1f1f1f;
+    border:2px solid #ff3b3b;
+    border-radius:18px;
+    padding:18px;
+    z-index:999999999;
+    display:none;
+
+    box-shadow:
+    0 0 12px #ff3b3b,
+    0 0 30px #ff3b3b;
+}
+
+.scene-popup.active{
+    display:block;
+}
+
+.popup-title{
+    font-size:16px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+.popup-btn{
+    width:100%;
+    border:none;
+    cursor:pointer;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:12px;
+    background:#2a2a2a;
+    color:white;
     font-size:15px;
     font-weight:700;
     transition:0.25s;
 }
 
-.top-buttons button:hover{
-    transform:scale(1.05);
+.popup-btn:hover{
+    background:#ff3b3b;
 }
 
-.whisper-btn{
-    border-color:#ffd500 !important;
-    box-shadow:0 0 10px #ffd500;
-}
-
-.location-btn{
-    border-color:#ff3b3b !important;
-    box-shadow:0 0 10px #ff3b3b;
+/* 본문 */
+.container{
+    width:100%;
+    max-width:1100px;
+    margin:auto;
+    padding:40px 24px 120px;
 }
 
 .scene{
-    margin-bottom:60px;
-    padding:28px;
-    border-radius:20px;
-    background:#161616;
-    border:1px solid #2a2a2a;
+    margin-bottom:90px;
+    padding:34px;
+    border-radius:24px;
+    background:#1b1b1b;
+    border:1px solid #2e2e2e;
+    transition:0.35s;
 }
 
 .scene-title{
-    font-size:30px;
+    font-size:34px;
     font-weight:900;
-    margin-bottom:25px;
-    color:#63b3ff;
+    margin-bottom:38px;
 }
 
-.line{
-    margin-bottom:14px;
-    font-size:18px;
+.dialogue{
+    font-size:21px;
+    margin-bottom:12px;
 }
 
-.character{
-    font-weight:900;
-    color:#7cc6ff;
-}
-
-.red-text{
-    color:#ff7a7a;
-    text-shadow:0 0 8px rgba(255,0,0,0.4);
+.speaker{
+    color:#8cc8ff;
+    font-weight:800;
 }
 
 .effect{
-    color:#ffd86b;
+    color:#bfbfbf;
     font-style:italic;
 }
 
-.highlight-yellow{
-    border:3px solid #ffe600;
-    box-shadow:
-        0 0 10px #ffe600,
-        0 0 25px #ffe600;
-    padding:18px;
+.red-text{
+    color:#ff8f8f;
+    text-shadow:0 0 10px rgba(255,80,80,0.5);
+    font-weight:800;
+}
+
+.whisper-highlight{
+    transition:0.35s;
+}
+
+.whisper-highlight.active{
+    border:3px solid #ffe100;
     border-radius:18px;
-    animation:flashYellow 1s infinite alternate;
-}
-
-.highlight-red{
-    border:3px solid #ff3c3c;
+    padding:24px;
     box-shadow:
-        0 0 12px #ff3c3c,
-        0 0 30px #ff3c3c;
-    padding:18px;
+    0 0 10px #ffe100,
+    0 0 25px #ffe100,
+    0 0 45px #ffe100;
+    background:rgba(255,225,0,0.05);
+}
+
+.location-highlight{
+    transition:0.35s;
+}
+
+.location-highlight.active{
+    border:3px solid #ff3b3b;
     border-radius:18px;
-    animation:flashRed 1s infinite alternate;
+    padding:24px;
+    box-shadow:
+    0 0 10px #ff3b3b,
+    0 0 25px #ff3b3b,
+    0 0 45px #ff3b3b;
+    background:rgba(255,40,40,0.05);
 }
 
-@keyframes flashYellow{
-    from{
-        box-shadow:0 0 8px #ffe600;
+@media(max-width:768px){
+
+    .top-ui{
+        top:12px;
+        right:12px;
+        /* flex-direction: column; 삭제 -> 모바일에서도 항상 가로 정렬 유지 */
     }
-    to{
-        box-shadow:0 0 30px #ffe600;
+
+    .scene-popup{
+        /* 버튼이 가로로 배치되므로 팝업의 top 시작 위치를 낮춰서 겹침 방지 */
+        top:82px; 
+        right:12px;
     }
+
+    .scene-title{
+        font-size:26px;
+    }
+
+    .dialogue{
+        font-size:17px;
+    }
+
 }
 
-@keyframes flashRed{
-    from{
-        box-shadow:0 0 8px #ff3c3c;
-    }
-    to{
-        box-shadow:0 0 35px #ff3c3c;
-    }
-}
-
-html{
-    scroll-behavior:smooth;
-}
 </style>
 </head>
 
 <body>
 
-<div class="top-buttons">
-    <button class="whisper-btn" onclick="showWhisper()">
+<div class="top-ui">
+
+    <button class="control-btn whisper-btn" id="whisperBtn">
         귓속말 대사
     </button>
 
-    <button class="location-btn" onclick="showLocationScenes()">
+    <button class="control-btn location-btn" id="locationBtn">
         타 장소 촬영
     </button>
+
+</div>
+
+<div class="scene-popup" id="scenePopup">
+
+    <div class="popup-title">
+        이동할 씬 선택
+    </div>
+
+    <button class="popup-btn" data-target="scene1">
+        Scene 1 이동
+    </button>
+
+    <button class="popup-btn" data-target="scene5">
+        Scene 5 이동
+    </button>
+
 </div>
 
 <div class="container">
 
-<!-- Scene 1 -->
-<div class="scene" id="locationScene1">
+<section class="scene location-highlight" id="scene1">
+
 <div class="scene-title"># Scene 1</div>
 
-<div class="line"><span class="character">도균 :</span> 어 왔어? 아니 다른게 아니라 오늘 뭐 저녁에 약속있어? 밥이라도 같이 먹을까 해서</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 어 왔어? 아니 다른게 아니라 오늘 뭐 저녁에 약속있어? 밥이라도 같이 먹을까 해서</div>
 
-<div class="line"><span class="character">세연 :</span> 아 오늘 저 남자친구 만나러 가기로 해서... 죄송합니다</div>
+<div class="dialogue"><span class="speaker">세연 :</span> 아 오늘 저 남자친구 만나러 가기로 해서... 죄송합니다</div>
 
-<div class="line"><span class="character">남 :</span> 아 너 남자친구가 있었구나?</div>
+<div class="dialogue"><span class="speaker">남 :</span> 아 너 남자친구가 있었구나?</div>
 
-<div class="line"><span class="character">세연 :</span> 네..</div>
+<div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
 
-<div class="line"><span class="character">도균 :</span> 학교 사람이야?</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 학교 사람이야?</div>
 
-<div class="line"><span class="character">세연 :</span> 네 맞아요</div>
+<div class="dialogue"><span class="speaker">세연 :</span> 네 맞아요</div>
 
-<div class="line"><span class="character">도균 :</span> 같은과?</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 같은과?</div>
 
-<div class="line"><span class="character">세연 :</span> 네..</div>
+<div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
 
-<div class="line"><span class="character">도균 :</span> 아ㅏㅏ 너무 좋네 어? 원래 그렇게 cc도 하고 대학 생활 즐기는 거지 헤어지지말고 오래오래 사귀어</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 아ㅏㅏ 너무 좋네 어? 원래 그렇게 cc도 하고 대학 생활 즐기는 거지 헤어지지말고 오래오래 사귀어</div>
 
-<div class="line"><span class="character">세연 :</span> 네, 감사합니다 선배님!</div>
+<div class="dialogue"><span class="speaker">세연 :</span> 네, 감사합니다 선배님!</div>
 
-</div>
+</section>
 
-<!-- Scene 2 -->
-<div class="scene">
+<section class="scene">
+
 <div class="scene-title"># Scene 2</div>
 
-<div class="line effect">(세연이를 클로즈업으로 시작 후 다른 후배들 나 나오도록 롱샷)</div>
+<div class="dialogue effect">(세연이를 클로즈업으로 시작 후 다른 후배들 나 나오도록 롱샷)</div>
 
-<div class="line"><span class="character">현수 :</span> 야 너네 오늘 왜 모이라고 한 줄 알아?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 너네 오늘 왜 모이라고 한 줄 알아?</div>
 
-<div class="line"><span class="character">다같이 :</span> 죄송합니다!</div>
+<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
 
-<div class="line"><span class="character">현수 :</span> 죄송한게 아니라 물어보는 거잖아</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 죄송한게 아니라 물어보는 거잖아</div>
 
-<div class="line"><span class="character">현수 :</span> 야 너네 혹시 학교에서 연애하는 애들 있냐?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 너네 혹시 학교에서 연애하는 애들 있냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 너네 뭐 연애하려고 학교 들어왔어?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너네 뭐 연애하려고 학교 들어왔어?</div>
 
-<div class="line"><span class="character">현수 :</span> cc는 3학년 때부터인 거 몰라?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> cc는 3학년 때부터인 거 몰라?</div>
 
-<div class="line"><span class="character">다같이 :</span> 죄송합니다!</div>
+<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
 
-<div class="line red-text"><span class="character">유수 :</span> 나도 외로워!!!!</div>
+<div class="dialogue red-text"><span class="speaker">유수 :</span> 나도 외로워!!!!</div>
 
-<div class="line effect">[이명 소리]</div>
+<div class="dialogue effect">[이명 소리]</div>
 
-<div class="line"><span class="character">현수 :</span> 목소리 너무 커.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 목소리 너무 커.</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
 
-<div class="line"><span class="character">현수 :</span> 조금 작게 말해.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 조금 작게 말해.</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리 쏘리</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리 쏘리</div>
 
-<div class="line"><span class="character">현수 :</span> (전화벨이 울린다) 예 선배님</div>
+<div class="dialogue"><span class="speaker">현수 :</span> (전화벨이 울린다) 예 선배님</div>
 
-<div class="line"><span class="character">(남친 목소리) :</span> 아니 세연이가 전화를 안받아서 지금 1학년 수업 끝나지 않았냐?</div>
+<div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아니 세연이가 전화를 안받아서 지금 1학년 수업 끝나지 않았냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 아... 아마 끝났을텐데... 제가 한 번 전화해볼까요?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아... 아마 끝났을텐데... 제가 한 번 전화해볼까요?</div>
 
-<div class="line"><span class="character">(남친 목소리) :</span> 아 됐어됐어</div>
+<div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아 됐어됐어</div>
 
-<div class="line"><span class="character">현수 :</span> 넵 선배님 들어가세요.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 넵 선배님 들어가세요.</div>
 
-<div class="line"><span class="character">현수 :</span> (전화 끊고) 하... 안세연 열외.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> (전화 끊고) 하... 안세연 열외.</div>
 
-</div>
+</section>
 
-<!-- Scene 3 -->
-<div class="scene">
+<section class="scene">
+
 <div class="scene-title"># Scene 3</div>
 
-<div class="line effect">(잠깐의 침묵)</div>
+<div class="dialogue effect">(잠깐의 침묵)</div>
 
-<div class="line"><span class="character">현수 :</span> 아무튼 니네 요새 진짜 말 많이 나와</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아무튼 니네 요새 진짜 말 많이 나와</div>
 
-<div class="line effect">[휴대폰 알람소리]</div>
+<div class="dialogue effect">[휴대폰 알람소리]</div>
 
-<div class="line"><span class="character">현수 :</span> 야. 집합하는데 핸드폰 벨소리 누구냐?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야. 집합하는데 핸드폰 벨소리 누구냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 집합하는데 핸드폰 켜는게 말이돼?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 집합하는데 핸드폰 켜는게 말이돼?</div>
 
-<div class="line"><span class="character">현수 :</span> 어떤 새끼야 빨리 나와!</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 어떤 새끼야 빨리 나와!</div>
 
-<div class="line"><span class="character">도균 :</span> 미안 내꺼야 쏘리.</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 미안 내꺼야 쏘리.</div>
 
-<div class="line"><span class="character">현수 :</span> 핸드폰 무음 해놔..</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 핸드폰 무음 해놔..</div>
 
-<div class="line"><span class="character">도균 :</span> 오케이</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 오케이</div>
 
-</div>
+</section>
 
-<!-- Scene 4 -->
-<div class="scene">
+<section class="scene">
+
 <div class="scene-title"># Scene 4</div>
 
-<div class="line"><span class="character">대수 :</span> 야 너 뭐냐 왜 선글라스 끼고 있냐</div>
+<div class="dialogue"><span class="speaker">대수 :</span> 야 너 뭐냐 왜 선글라스 끼고 있냐</div>
 
-<div class="line"><span class="character">유수 :</span> 죄송합니다.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 죄송합니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 야 너 놀러왔냐?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 너 놀러왔냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 뭐 양양비치 왔어?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 뭐 양양비치 왔어?</div>
 
-<div class="line"><span class="character">현수 :</span> 선글라스를 왜 끼고 있어</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 선글라스를 왜 끼고 있어</div>
 
-<div class="line"><span class="character">유수 :</span> 제가 쌍수를 해서....</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 제가 쌍수를 해서....</div>
 
-<div class="line"><span class="character">현수 :</span> 쌍...쌍수했다고?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 쌍...쌍수했다고?</div>
 
-<div class="line"><span class="character">유수 :</span> 예.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 예.</div>
 
-<div class="line"><span class="character">현수 :</span> 야, 아무리 그래도 집합하는데, 선글라스 끼고 있으면 어떡해?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야, 아무리 그래도 집합하는데, 선글라스 끼고 있으면 어떡해?</div>
 
-<div class="line red-text"><span class="character">유수 :</span> 네가 김보성이야아??!!</div>
+<div class="dialogue red-text"><span class="speaker">유수 :</span> 네가 김보성이야아??!!</div>
 
-<div class="line"><span class="character">현수 :</span> 아씨.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아씨.</div>
 
-<div class="line"><span class="character">현수 :</span> 너 김장훈이야? 소리를 왜 이렇게 질러?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너 김장훈이야? 소리를 왜 이렇게 질러?</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
 
-<div class="line"><span class="character">현수 :</span> 아, 작게 말해. 다 들린다고.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아, 작게 말해. 다 들린다고.</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
 
-<div class="line"><span class="character">현수 :</span> 야, 선글라스.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야, 선글라스.</div>
 
-<div class="line"><span class="character">유수 :</span> 예 선배임</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 예 선배임</div>
 
-<div class="line"><span class="character">현수 :</span> 너 진짜 아까부터 졸라 마음에 안 들거든, 너 너 따라와.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너 진짜 아까부터 졸라 마음에 안 들거든, 너 너 따라와.</div>
 
-</div>
+</section>
 
-<!-- Scene 5 -->
-<div class="scene" id="locationScene2">
+<section class="scene location-highlight" id="scene5">
+
 <div class="scene-title"># Scene 5</div>
 
-<div class="line"><span class="character">현수 :</span> 너 쌍수 어디서 했어?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너 쌍수 어디서 했어?</div>
 
-<div class="line"><span class="character">유수 :</span> 예?</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 예?</div>
 
-<div class="line"><span class="character">현수 :</span> 아냐 혼내는 거 아니야, 편하게 편하게 편하게.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아냐 혼내는 거 아니야, 편하게 편하게 편하게.</div>
 
-<div class="line"><span class="character">현수 :</span> 아니, 나도 이번에 쌍수 하려고 하거든.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아니, 나도 이번에 쌍수 하려고 하거든.</div>
 
-<div class="line"><span class="character">현수 :</span> 한번 봐봐. (유수가 선글라스를 벗어 눈을 보여준 뒤) 속쌍이야? 비포 사진 있어?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 한번 봐봐. (유수가 선글라스를 벗어 눈을 보여준 뒤) 속쌍이야? 비포 사진 있어?</div>
 
-<div class="line"><span class="character">유수 :</span> (핸드폰을 보여주며) 아..네.. 여기..</div>
+<div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 보여주며) 아..네.. 여기..</div>
 
-<div class="line"><span class="character">현수 :</span> 오.. 좋네~ 어디서 했어?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 오.. 좋네~ 어디서 했어?</div>
 
-<div class="line"><span class="character">유수 :</span> (핸드폰을 켜서 화면을 보여주며) 강남언니에서 알아보고 했습니다.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 켜서 화면을 보여주며) 강남언니에서 알아보고 했습니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 아 여기 괜찮아? 비싼 거 아니야?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아 여기 괜찮아? 비싼 거 아니야?</div>
 
-<div class="line"><span class="character">유수 :</span> 아닙니다. 여기 대학생 상대로 프로모션 이벤트도 진행하고, 최저가 순으로 쌍수, 눈매교정, 트임, 눈밑지방재배치까지 받을 수 있습니다.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 아닙니다. 여기 대학생 상대로 프로모션 이벤트도 진행하고, 최저가 순으로 쌍수, 눈매교정, 트임, 눈밑지방재배치까지 받을 수 있습니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 야 괜찮네~</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 괜찮네~</div>
 
-<div class="line"><span class="character">유수 :</span> 다른 어플에 비해서 투명한 가격 정보와 풍부한 리얼 후기, 앱 전용 할인 혜택으로 정가 대비 최대 40%까지 할인 받을 수 있으니까 알아보시면 될 것 같습니다.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 다른 어플에 비해서 투명한 가격 정보와 풍부한 리얼 후기, 앱 전용 할인 혜택으로 정가 대비 최대 40%까지 할인 받을 수 있으니까 알아보시면 될 것 같습니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 야 진짜 고맙다. 다음에 내가 맛있는ㄱ</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 진짜 고맙다. 다음에 내가 맛있는ㄱ</div>
 
-<div class="line"><span class="character">대수 :</span> 야 뭐해? 언제 와?</div>
+<div class="dialogue"><span class="speaker">대수 :</span> 야 뭐해? 언제 와?</div>
 
-<div class="line"><span class="character">현수 :</span> (뺨을 때리고나서) 조심해 진짜.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> (뺨을 때리고나서) 조심해 진짜.</div>
 
-</div>
+</section>
 
-<!-- Scene 6 -->
-<div class="scene">
+<section class="scene">
+
 <div class="scene-title"># Scene 6</div>
 
-<div class="line"><span class="character">현수 :</span> 야 너ㄴ</div>
+<div class="dialogue effect">(현수가 후배들을 슥 훑고)</div>
 
-<div class="line"><span class="character">선일 :</span> (급하게 뛰어오며) 죄송합니다.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 너ㄴ</div>
 
-<div class="line"><span class="character">현수 :</span> 야! 너 왜 이제 오냐?</div>
+<div class="dialogue"><span class="speaker">선일 :</span> (급하게 뛰어오며) 죄송합니다.</div>
 
-<div class="line"><span class="character">선일 :</span> 죄송합니다</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야! 너 왜 이제 오냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 묻잖아. 왜 이제 오냐고</div>
+<div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다</div>
 
-<div class="line"><span class="character">선일 :</span> 깜빡했습니다.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 묻잖아. 왜 이제 오냐고</div>
 
-<div class="line"><span class="character">현수 :</span> 이 새끼 명품도 입었네? 명품은 2학년때부터인거 몰라?</div>
+<div class="dialogue"><span class="speaker">선일 :</span> 깜빡했습니다.</div>
 
-<div class="line"><span class="character">선일 :</span> 죄송합니다.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 이 새끼 명품도 입었네? 명품은 2학년때부터인거 몰라?</div>
 
-<div class="line"><span class="character">현수 :</span> 야 너네가 지금 헷갈리는 거 같은데.</div>
+<div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 다시 한번 말해 줄게. 1학년 명품 금지. 모자 금지. 슬리퍼 금지.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 너네가 지금 헷갈리는 거 같은데.</div>
 
-<div class="line red-text"><span class="character">유수 :</span> 그냥 씨바 다 금지이!!!!</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 다시 한번 말해 줄게. 1학년 명품 금지. 모자 금지. 슬리퍼 금지.</div>
 
-<div class="line effect">[이명 소리]</div>
+<div class="dialogue red-text"><span class="speaker">유수 :</span> 그냥 씨바 다 금지이!!!!</div>
 
-<div class="line"><span class="character">현수 :</span> 너 tlqkf 소리 지르는 거 금지.</div>
+<div class="dialogue effect">[이명 소리]</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리..</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너 tlqkf 소리 지르는 거 금지.</div>
 
-<div class="line"><span class="character">현수 :</span> tlqkf 다 들린다고.</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리..</div>
 
-<div class="line"><span class="character">유수 :</span> 쏘리. 쏘리.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> tlqkf 다 들린다고.</div>
 
-<div class="line"><span class="character">현수 :</span> 아;;</div>
+<div class="dialogue"><span class="speaker">유수 :</span> 쏘리. 쏘리.</div>
 
-</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 아;;</div>
 
-<!-- Scene 7 -->
-<div class="scene">
+</section>
+
+<section class="scene">
+
 <div class="scene-title"># Scene 7</div>
 
-<div class="line"><span class="character">현수 :</span> 야 그리고 너네 말 졸라 많이 나와.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 그리고 너네 말 졸라 많이 나와.</div>
 
-<div class="line"><span class="character">다같이 :</span> 죄송합니다.</div>
+<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다.</div>
 
-<div class="line"><span class="character">현수 :</span> 야 이번 편집 수업 때 늦어 가지고 교수님한테 혼난 새끼 누구냐?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 이번 편집 수업 때 늦어 가지고 교수님한테 혼난 새끼 누구냐?</div>
 
-<div class="line"><span class="character">현수 :</span> 누구냐고!</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 누구냐고!</div>
 
-<div class="line"><span class="character">도균 :</span> 아 그거 나야</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 아 그거 나야</div>
 
-<div class="line"><span class="character">현수 :</span> 너야..?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너야..?</div>
 
-<div class="line"><span class="character">도균 :</span> 어..</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 어..</div>
 
-<div class="line"><span class="character">현수 :</span> 진짜 지각하지 마.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 진짜 지각하지 마.</div>
 
-<div class="line"><span class="character">도균 :</span> 쏘리</div>
+<div class="dialogue"><span class="speaker">도균 :</span> 쏘리</div>
 
-</div>
+</section>
 
-<!-- Scene 8 -->
-<div class="scene">
+<section class="scene">
+
 <div class="scene-title"># Scene 8</div>
 
-<div class="line"><span class="character">현수 :</span> 야 다 눈감아</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 야 다 눈감아</div>
 
-<div class="line"><span class="character">현수 :</span> 너네 뒤에서 내 욕한 새끼 누구야?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 너네 뒤에서 내 욕한 새끼 누구야?</div>
 
-<div class="line"><span class="character">현수 :</span> 나와</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 나와</div>
 
-<div class="line"><span class="character">현수 :</span> 다 알고 있으니까 나와라. 진짜 누구야?</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 다 알고 있으니까 나와라. 진짜 누구야?</div>
 
-<div class="line whisper-target" id="whisperSection">
+<div class="whisper-highlight" id="whisperTarget">
 
-<div class="line"><span class="character">대수 :</span> 야 누군데?</div>
+<div class="dialogue"><span class="speaker">대수 :</span> 야 누군데?</div>
 
-<div class="line"><span class="character">현수 :</span> 몰라.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 몰라.</div>
 
-<div class="line"><span class="character">대수 :</span> 근데 왜 안다고 해?</div>
+<div class="dialogue"><span class="speaker">대수 :</span> 근데 왜 안다고 해?</div>
 
-<div class="line"><span class="character">현수 :</span> 그냥 떠보는 거야.</div>
+<div class="dialogue"><span class="speaker">현수 :</span> 그냥 떠보는 거야.</div>
 
-<div class="line"><span class="character">대수 :</span> 아ㅏ 오케이 오케이.</div>
-
-</div>
-
-<div class="line"><span class="character">현수 :</span> 야~다 알고 있는데 끝까지 손 안 들겠다고.</div>
-
-<div class="line"><span class="character">현수 :</span> 야, 진짜 마지막 기회 준다. 내 욕한 새끼 누구야? 손 들어.</div>
-
-<div class="line"><span class="character">현수 :</span> 진짜 마지막 기회다. 손 들어.</div>
-
-<div class="line effect">(카메라 앵글이 도균이 쪽으로 이동되며)</div>
-
-<div class="line"><span class="character">도균 :</span> (손을 들며) 미안..</div>
-
-<div class="line red-text"><span class="character">현수 :</span> 야,이 tlqkf롬아</div>
+<div class="dialogue"><span class="speaker">대수 :</span> 아ㅏ 오케이 오케이.</div>
 
 </div>
+
+<div class="dialogue"><span class="speaker">현수 :</span> 야~다 알고 있는데 끝까지 손 안 들겠다고.</div>
+
+<div class="dialogue"><span class="speaker">현수 :</span> 야, 진짜 마지막 기회 준다. 내 욕한 새끼 누구야? 손 들어.</div>
+
+<div class="dialogue"><span class="speaker">현수 :</span> 진짜 마지막 기회다. 손 들어.</div>
+
+<div class="dialogue effect">(카메라 앵글이 도균이 쪽으로 이동되며)</div>
+
+<div class="dialogue"><span class="speaker">도균 :</span> (손을 들며) 미안..</div>
+
+<div class="dialogue red-text"><span class="speaker">현수 :</span> 야,이 tlqkf롬아</div>
+
+</section>
 
 </div>
 
 <script>
-function showWhisper(){
 
-    const target = document.getElementById("whisperSection");
+// 귓속말 버튼
+const whisperBtn = document.getElementById('whisperBtn');
+const whisperTarget = document.getElementById('whisperTarget');
 
-    target.classList.add("highlight-yellow");
+let whisperOn = false;
 
-    target.scrollIntoView({
-        behavior:"smooth",
-        block:"center"
+whisperBtn.addEventListener('click', () => {
+
+    whisperOn = !whisperOn;
+
+    whisperBtn.classList.toggle('active');
+
+    whisperTarget.classList.toggle('active');
+
+    if(whisperOn){
+
+        whisperTarget.scrollIntoView({
+            behavior:'smooth',
+            block:'center'
+        });
+
+    }
+
+});
+
+// 타 장소 촬영 버튼
+const locationBtn = document.getElementById('locationBtn');
+const scenePopup = document.getElementById('scenePopup');
+
+const locationTargets = document.querySelectorAll('.location-highlight');
+
+let locationOn = false;
+
+// 버튼 클릭
+locationBtn.addEventListener('click', () => {
+
+    // OFF → ON
+    if(!locationOn){
+
+        locationOn = true;
+
+        locationBtn.classList.add('active');
+
+        locationTargets.forEach(scene => {
+            scene.classList.add('active');
+        });
+
+        scenePopup.classList.add('active');
+
+    }
+
+    // ON → OFF
+    else{
+
+        locationOn = false;
+
+        locationBtn.classList.remove('active');
+
+        locationTargets.forEach(scene => {
+            scene.classList.remove('active');
+        });
+
+        scenePopup.classList.remove('active');
+
+    }
+
+});
+
+// 선택창 이동
+document.querySelectorAll('.popup-btn').forEach(btn => {
+
+    btn.addEventListener('click', () => {
+
+        const target = document.getElementById(btn.dataset.target);
+
+        target.scrollIntoView({
+            behavior:'smooth',
+            block:'center'
+        });
+
     });
 
-    setTimeout(()=>{
-        target.classList.remove("highlight-yellow");
-    },5000);
-}
+});
 
-function showLocationScenes(){
-
-    const scene1 = document.getElementById("locationScene1");
-    const scene2 = document.getElementById("locationScene2");
-
-    scene1.classList.add("highlight-red");
-    scene2.classList.add("highlight-red");
-
-    scene1.scrollIntoView({
-        behavior:"smooth",
-        block:"center"
-    });
-
-    setTimeout(()=>{
-        scene1.classList.remove("highlight-red");
-        scene2.classList.remove("highlight-red");
-    },6000);
-}
 </script>
 
 </body>
