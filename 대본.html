@@ -119,6 +119,67 @@ body{
     background:#ff3b3b;
 }
 
+/* 배역 보기 모달 팝업 스타일 추가 */
+.cast-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000000000; /* 최상단에 위치 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cast-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cast-modal-content {
+    position: relative;
+    background: #1f1f1f;
+    padding: 30px 20px 20px 20px;
+    border-radius: 20px;
+    border: 2px solid #444;
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cast-modal-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.cast-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff3b3b;
+    cursor: pointer;
+    transition: 0.2s;
+    user-select: none;
+    line-height: 1;
+}
+
+.cast-modal-close:hover {
+    transform: scale(1.15);
+    text-shadow: 0 0 8px #ff3b3b;
+}
+
 /* 본문 */
 .container{
     width:100%;
@@ -331,6 +392,10 @@ body{
 
 <div class="top-ui">
 
+    <button class="control-btn" id="castBtn">
+        배역 보기
+    </button>
+
     <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn" id="downloadBtn">
         사운드트랙 다운로드
     </a>
@@ -343,6 +408,13 @@ body{
         타 장소 촬영
     </button>
 
+</div>
+
+<div class="cast-modal" id="castModal">
+    <div class="cast-modal-content">
+        <span class="cast-modal-close" id="castModalClose">&times;</span>
+        <img src="https://raw.githubusercontent.com/Yousoo68/TQAnivP/refs/heads/main/image1.png" alt="배역 이미지">
+    </div>
 </div>
 
 <div class="scene-popup" id="scenePopup">
@@ -667,6 +739,29 @@ body{
 </div>
 
 <script>
+
+// 배역 보기 모달 제어 스크립트 추가
+const castBtn = document.getElementById('castBtn');
+const castModal = document.getElementById('castModal');
+const castModalClose = document.getElementById('castModalClose');
+
+// 배역 보기 클릭 시 오픈
+castBtn.addEventListener('click', () => {
+    castModal.classList.add('active');
+});
+
+// X 버튼 클릭 시 닫기
+castModalClose.addEventListener('click', () => {
+    castModal.classList.remove('active');
+});
+
+// 모달 바깥 검은 배경 클릭 시 닫기
+castModal.addEventListener('click', (e) => {
+    if (e.target === castModal) {
+        castModal.classList.remove('active');
+    }
+});
+
 
 // 귓속말 버튼
 const whisperBtn = document.getElementById('whisperBtn');
