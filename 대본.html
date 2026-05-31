@@ -110,7 +110,6 @@ body { background: #111; color: #f4f4f4; font-family: Pretendard, sans-serif; li
 </head>
 <body>
 
-<!-- 인증 레이어 추가 -->
 <div id="authGate">
     <div class="auth-box">
         <h2>인증 필요</h2>
@@ -122,14 +121,13 @@ body { background: #111; color: #f4f4f4; font-family: Pretendard, sans-serif; li
     </div>
 </div>
 
-<!-- 본문 전체 감싸는 콘텐츠 박스 (기본 숨김) -->
 <div id="mainContent">
     <div class="top-ui">
         <button class="control-btn panel-trigger-btn" id="panelTriggerBtn">⁝</button>
         <div class="top-panel-menu" id="topPanelMenu">
             <a href="https://www.youtube.com/watch?v=1xDONKYdORE" target="_blank" class="control-btn">원본 보기</a>
             <button class="control-btn" id="castBtn">배역 보기</button>
-            <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn">사운드트랙 다운로드</a>
+            <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn" id="downloadBtn">사운드트랙 다운로드</a>
             <button class="control-btn whisper-btn" id="whisperBtn">귓속말 대사</button>
             <button class="control-btn location-btn" id="locationBtn">타 장소 촬영</button>
         </div>
@@ -338,17 +336,26 @@ const authGate = document.getElementById('authGate');
 const authInput = document.getElementById('authInput');
 const authBtn = document.getElementById('authBtn');
 const mainContent = document.getElementById('mainContent');
+const downloadBtn = document.getElementById('downloadBtn');
 
 // 입력창 제어: 오직 숫자만 입력받을 수 있도록 필터링
 authInput.addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
 });
 
-// 인증 확인 로직 함수 (요청 사항 반영 수정 부분)
+// 인증 확인 로직 함수 (세연, 선일 로그인 시 사운드트랙 다운로드 버튼 숨김 제어 추가)
 function checkAuthentication() {
     const code = authInput.value.trim();
     if (userMap[code]) {
         alert("환영합니다. " + userMap[code] + "님!");
+        
+        // 특정 학번(세연: 20261371, 선일: 20261393)일 경우 사운드트랙 다운로드 버튼 숨김 처리
+        if (code === "20261371" || code === "20261393") {
+            downloadBtn.style.display = 'none';
+        } else {
+            downloadBtn.style.display = 'inline-flex'; // 다른 사용자는 다시 보이도록 초기화
+        }
+
         authGate.style.display = 'none';
         mainContent.style.display = 'block';
     } else {
