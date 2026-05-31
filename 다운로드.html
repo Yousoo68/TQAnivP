@@ -1,18 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>사운드트랙 다운로드</title>
+<meta charset="UTF-8">
+<title>사운드트랙 다운로드</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:'Pretendard', sans-serif;
+    }
+
+    body{
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:#f5f7fb;
+    }
+
+    .container{
+        display:flex;
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .download-btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        padding:16px 28px;
+        border:none;
+        border-radius:16px;
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        color:white;
+        font-size:16px;
+        font-weight:600;
+        text-decoration:none;
+        cursor:pointer;
+        box-shadow:0 10px 25px rgba(102,126,234,.25);
+        transition:all .25s ease;
+    }
+
+    .download-btn:hover{
+        transform:translateY(-3px);
+        box-shadow:0 15px 35px rgba(102,126,234,.35);
+    }
+
+    .download-btn:active{
+        transform:translateY(0);
+    }
+
+    .icon{
+        font-size:18px;
+    }
+</style>
+
 </head>
 <body>
 
-    <a href="똥군기_메인브금.mp3" download>
-        <button>메인브금 다운로드</button>
+<div class="container">
+
+    <a href="똥군기_메인브금.mp3" download class="download-btn">
+        <span class="icon">🎵</span>
+        메인 브금 다운로드
     </a>
 
-    <a href="똥군기_브금_도입부.mp3" download>
-        <button>초반 도입부 브금 다운로드</button>
+    <a href="똥군기_브금_도입부.mp3" download class="download-btn">
+        <span class="icon">🎧</span>
+        초반 도입부 브금 다운로드
     </a>
+
+</div>
 
 </body>
 </html>
