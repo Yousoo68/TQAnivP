@@ -4,915 +4,452 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>최종 대본</title>
-
 <style>
+/* 기본 초기화 및 스크롤 설정 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: #111; color: #f4f4f4; font-family: Pretendard, sans-serif; line-height: 1.9; position: relative; min-height: 100vh; }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* 인증 게이트 스타일 */
+#authGate {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #111; z-index: 9999; display: flex; align-items: center; justify-content: center;
 }
+.auth-box {
+    background: #1f1f1f; padding: 40px 30px; border-radius: 20px;
+    border: 2px solid #ff3b3b; box-shadow: 0 0 25px rgba(255, 59, 59, 0.2);
+    text-align: center; max-width: 400px; width: 90%;
+}
+.auth-box h2 { font-size: 24px; font-weight: 900; margin-bottom: 10px; color: #fff; }
+.auth-box p { font-size: 14px; color: #aaa; margin-bottom: 24px; }
+.auth-input-wrap { display: flex; gap: 10px; }
+.auth-input {
+    flex: 1; background: #111; border: 1px solid #444; border-radius: 12px;
+    padding: 14px; color: #fff; font-size: 18px; font-weight: 700; text-align: center;
+    letter-spacing: 2px; outline: none; transition: 0.25s;
+}
+.auth-input:focus { border-color: #ff3b3b; box-shadow: 0 0 10px rgba(255, 59, 59, 0.3); }
+.auth-btn {
+    background: #ff3b3b; color: #fff; border: none; border-radius: 12px;
+    padding: 0 24px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.25s;
+}
+.auth-btn:hover { background: #e02f2f; transform: translateY(-1px); }
 
-html{
-    scroll-behavior:smooth;
-}
+/* 메인 콘텐츠 숨김 처리 전용 */
+#mainContent { display: none; }
 
-body{
-    background:#111;
-    color:#f4f4f4;
-    font-family:Pretendard, sans-serif;
-    line-height:1.9;
-    position:relative; /* absolute 기준점 설정 */
-}
+/* UI 공통 및 상단 패널 */
+.top-ui, .floating-nav { position: fixed; z-index: 100; display: flex; flex-direction: column; }
+.top-ui { top: 18px; right: 18px; align-items: flex-end; gap: 10px; position: absolute; }
+.panel-trigger-btn { background: #ff3b3b !important; box-shadow: 0 0 15px rgba(255, 59, 59, 0.4) !important; }
 
-/* 오른쪽 상단 absolute 배치 (스크롤 시 따라오지 않음, 가로 정렬 기본값) */
-.top-ui{
-    position:absolute;
-    top:18px;
-    right:18px;
-    z-index:999999999;
-    display:flex;
-    gap:12px;
-}
+.top-panel-menu, .floating-sub-menu { display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+.top-panel-menu { gap: 12px; transform: translateY(-10px); }
+.floating-sub-menu { gap: 10px; transform: translateY(20px); }
+.top-panel-menu.active, .floating-sub-menu.active { opacity: 1; visibility: visible; transform: translateY(0); }
 
-.control-btn{
-    border:none;
-    cursor:pointer;
-    padding:14px 18px;
-    border-radius:14px;
-    font-size:15px;
-    font-weight:800;
-    color:white;
-    background:#202020;
-    transition:0.25s;
-    box-shadow:0 0 12px rgba(255,255,255,0.15);
-    text-decoration: none; /* 링크 버튼용 기본선 제거 */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
+.control-btn { border: none; cursor: pointer; padding: 14px 18px; border-radius: 14px; font-size: 15px; font-weight: 800; color: #fff; background: #202020; transition: 0.25s; box-shadow: 0 0 12px rgba(255,255,255,0.15); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+.control-btn:hover, .floating-btn:hover { transform: translateY(-2px); }
+.whisper-btn.active { background: #ffe100; color: #111; box-shadow: 0 0 10px #ffe100, 0 0 20px #ffe100, 0 0 40px #ffe100; }
+.location-btn.active { background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b, 0 0 20px #ff3b3b, 0 0 40px #ff3b3b; }
 
-.control-btn:hover{
-    transform:translateY(-2px);
-}
+/* 팝업 및 모달 공통 */
+.scene-popup, .full-scene-popup { background: #1f1f1f; padding: 18px; z-index: 100; display: none; border-radius: 18px; }
+.scene-popup { position: absolute; top: 82px; right: 18px; width: 230px; border: 2px solid #ff3b3b; box-shadow: 0 0 12px #ff3b3b, 0 0 30px #ff3b3b; }
+.full-scene-popup { position: fixed; bottom: 95px; right: 95px; width: 250px; max-height: 400px; overflow-y: auto; border: 2px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+.scene-popup.active, .full-scene-popup.active { display: block; }
 
-.whisper-btn.active{
-    background:#ffe100;
-    color:#111;
-    box-shadow:
-    0 0 10px #ffe100,
-    0 0 20px #ffe100,
-    0 0 40px #ffe100;
-}
+.popup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.popup-title { font-size: 16px; font-weight: 800; }
+.popup-close-btn, .cast-modal-close { font-weight: bold; color: #ff3b3b; cursor: pointer; transition: 0.2s; user-select: none; line-height: 1; }
+.popup-close-btn:hover, .cast-modal-close:hover { transform: scale(1.15); text-shadow: 0 0 8px #ff3b3b; }
+.popup-close-btn { font-size: 20px; }
+.cast-modal-close { position: absolute; top: 8px; right: 15px; font-size: 28px; }
 
-.location-btn.active{
-    background:#ff3b3b;
-    box-shadow:
-    0 0 10px #ff3b3b,
-    0 0 20px #ff3b3b,
-    0 0 40px #ff3b3b;
-}
+.popup-btn { width: 100%; border: none; cursor: pointer; padding: 12px; margin-bottom: 10px; border-radius: 12px; background: #2a2a2a; color: #fff; font-size: 15px; font-weight: 700; transition: 0.25s; }
+.popup-btn:hover { background: #ff3b3b; }
 
-/* 선택창 */
-.scene-popup{
-    position:absolute;
-    top:82px;
-    right:18px;
-    width:230px;
-    background:#1f1f1f;
-    border:2px solid #ff3b3b;
-    border-radius:18px;
-    padding:18px;
-    z-index:999999999;
-    display:none;
+.cast-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 110; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+.cast-modal.active { opacity: 1; visibility: visible; }
+.cast-modal-content { position: relative; background: #1f1f1f; padding: 30px 20px 20px; border-radius: 20px; border: 2px solid #444; max-width: 90%; max-height: 90%; box-shadow: 0 0 30px rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; }
+.cast-modal-content img { max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 10px; }
 
-    box-shadow:
-    0 0 12px #ff3b3b,
-    0 0 30px #ff3b3b;
-}
+/* 본문 스타일 */
+.container { width: 100%; max-width: 1100px; margin: auto; padding: 40px 24px 120px; }
+.scene { margin-bottom: 90px; padding: 34px; border-radius: 24px; background: #1b1b1b; border: 1px solid #2e2e2e; transition: 0.35s; }
+.scene-title { font-size: 34px; font-weight: 900; margin-bottom: 38px; }
+.dialogue { font-size: 21px; margin-bottom: 12px; }
+.speaker { color: #8cc8ff; font-weight: 800; }
+.effect { color: #bfbfbf; font-style: italic; }
+.red-text { color: #ff8f8f; text-shadow: 0 0 10px rgba(255,80,80,0.5); font-weight: 800; }
 
-.scene-popup.active{
-    display:block;
-}
+/* 하이라이트 공통 */
+.whisper-highlight, .location-highlight { transition: 0.35s; }
+.whisper-highlight.active, .location-highlight.active { border-radius: 18px; padding: 24px; border: 3px solid #ffe100; box-shadow: 0 0 10px #ffe100, 0 0 25px #ffe100, 0 0 45px #ffe100; background: rgba(255,225,0,0.05); }
+.location-highlight.active { border-color: #ff3b3b; box-shadow: 0 0 10px #ff3b3b, 0 0 25px #ff3b3b, 0 0 45px #ff3b3b; background: rgba(255,40,40,0.05); }
 
-.popup-title{
-    font-size:16px;
-    font-weight:800;
-    margin-bottom:14px;
-}
-
-.popup-btn{
-    width:100%;
-    border:none;
-    cursor:pointer;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:12px;
-    background:#2a2a2a;
-    color:white;
-    font-size:15px;
-    font-weight:700;
-    transition:0.25s;
-}
-
-.popup-btn:hover{
-    background:#ff3b3b;
-}
-
-/* 배역 보기 모달 팝업 스타일 추가 */
-.cast-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 1000000000; /* 최상단에 위치 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.cast-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.cast-modal-content {
-    position: relative;
-    background: #1f1f1f;
-    padding: 30px 20px 20px 20px;
-    border-radius: 20px;
-    border: 2px solid #444;
-    max-width: 90%;
-    max-height: 90%;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.cast-modal-content img {
-    max-width: 100%;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 10px;
-}
-
-.cast-modal-close {
-    position: absolute;
-    top: 8px;
-    right: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    color: #ff3b3b;
-    cursor: pointer;
-    transition: 0.2s;
-    user-select: none;
-    line-height: 1;
-}
-
-.cast-modal-close:hover {
-    transform: scale(1.15);
-    text-shadow: 0 0 8px #ff3b3b;
-}
-
-/* 본문 */
-.container{
-    width:100%;
-    max-width:1100px;
-    margin:auto;
-    padding:40px 24px 120px;
-}
-
-.scene{
-    margin-bottom:90px;
-    padding:34px;
-    border-radius:24px;
-    background:#1b1b1b;
-    border:1px solid #2e2e2e;
-    transition:0.35s;
-}
-
-.scene-title{
-    font-size:34px;
-    font-weight:900;
-    margin-bottom:38px;
-}
-
-.dialogue{
-    font-size:21px;
-    margin-bottom:12px;
-}
-
-.speaker{
-    color:#8cc8ff;
-    font-weight:800;
-}
-
-.effect{
-    color:#bfbfbf;
-    font-style:italic;
-}
-
-.red-text{
-    color:#ff8f8f;
-    text-shadow:0 0 10px rgba(255,80,80,0.5);
-    font-weight:800;
-}
-
-.whisper-highlight{
-    transition:0.35s;
-}
-
-.whisper-highlight.active{
-    border:3px solid #ffe100;
-    border-radius:18px;
-    padding:24px;
-    box-shadow:
-    0 0 10px #ffe100,
-    0 0 25px #ffe100,
-    0 0 45px #ffe100;
-    background:rgba(255,225,0,0.05);
-}
-
-.location-highlight{
-    transition:0.35s;
-}
-
-.location-highlight.active{
-    border:3px solid #ff3b3b;
-    border-radius:18px;
-    padding:24px;
-    box-shadow:
-    0 0 10px #ff3b3b,
-    0 0 25px #ff3b3b,
-    0 0 45px #ff3b3b;
-    background:rgba(255,40,40,0.05);
-}
-
-/* 우측 하단 플로팅 네비게이션 UI */
-.floating-nav {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 999999999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-
-.floating-sub-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-}
-
-.floating-sub-menu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.floating-btn {
-    border: none;
-    cursor: pointer;
-    width: 55px; /* 글자가 완전히 들어가도록 크기 소폭 조절 */
-    height: 55px;
-    border-radius: 55px;
-    font-size: 18px;
-    font-weight: 800;
-    color: white;
-    background: #202020;
-    box-shadow: 0 0 15px rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.25s;
-}
-
-.floating-btn:hover {
-    transform: translateY(-2px);
-    background: #333;
-}
-
-.floating-trigger-btn {
-    font-size: 24px;
-    background: #f4f4f4;
-    color: #111;
-    box-shadow: 0 0 15px rgba(255,255,255,0.4);
-}
-
-.floating-trigger-btn:hover {
-    background: white;
-}
-
-/* 하단 씬 전체 네비게이션 팝업 */
-.full-scene-popup {
-    position: fixed;
-    bottom: 95px;
-    right: 95px;
-    width: 250px;
-    max-height: 400px;
-    overflow-y: auto;
-    background: #1f1f1f;
-    border: 2px solid #ffffff;
-    border-radius: 18px;
-    padding: 18px;
-    z-index: 999999999;
-    display: none;
-    box-shadow: 0 0 20px rgba(255,255,255,0.3);
-}
-
-.full-scene-popup.active {
-    display: block;
-}
-
-/* 스크롤바 커스텀 */
-.full-scene-popup::-webkit-scrollbar {
-    width: 6px;
-}
-.full-scene-popup::-webkit-scrollbar-thumb {
-    background: #444;
-    border-radius: 4px;
-}
+/* 플로팅 네비게이션 */
+.floating-nav { bottom: 24px; right: 24px; align-items: center; gap: 12px; }
+.floating-btn { border: none; cursor: pointer; width: 55px; height: 55px; border-radius: 55px; font-size: 18px; font-weight: 800; color: #fff; background: #202020; box-shadow: 0 0 15px rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; transition: 0.25s; }
+.floating-btn:hover { background: #333; }
+.floating-trigger-btn { font-size: 24px; background: #f4f4f4; color: #111; box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+.floating-trigger-btn:hover { background: #fff; }
+.full-scene-popup::-webkit-scrollbar { width: 6px; }
+.full-scene-popup::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
 
 @media(max-width:768px){
-
-    .top-ui{
-        top:12px;
-        right:12px;
-        gap:8px;
-    }
-
-    .control-btn {
-        padding: 10px 14px;
-        font-size: 13px;
-        border-radius: 10px;
-    }
-
-    .scene-popup{
-        top:72px; 
-        right:12px;
-    }
-
-    .scene-title{
-        font-size:26px;
-    }
-
-    .dialogue{
-        font-size:17px;
-    }
-
-    .floating-nav {
-        bottom: 16px;
-        right: 16px;
-    }
-    
-    .full-scene-popup {
-        bottom: 85px;
-        right: 16px;
-        width: 200px;
-    }
-
+    .top-ui { top: 12px; right: 12px; gap: 8px; }
+    .control-btn { padding: 10px 14px; font-size: 13px; border-radius: 10px; }
+    .scene-popup { top: 120px; right: 12px; }
+    .scene-title { font-size: 26px; }
+    .dialogue { font-size: 17px; }
+    .floating-nav { bottom: 16px; right: 16px; }
+    .full-scene-popup { bottom: 85px; right: 16px; width: 200px; }
 }
-
 </style>
 </head>
-
 <body>
 
-<div class="top-ui">
-
-    <button class="control-btn" id="castBtn">
-        배역 보기
-    </button>
-
-    <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn" id="downloadBtn">
-        사운드트랙 다운로드
-    </a>
-
-    <button class="control-btn whisper-btn" id="whisperBtn">
-        귓속말 대사
-    </button>
-
-    <button class="control-btn location-btn" id="locationBtn">
-        타 장소 촬영
-    </button>
-
-</div>
-
-<div class="cast-modal" id="castModal">
-    <div class="cast-modal-content">
-        <span class="cast-modal-close" id="castModalClose">&times;</span>
-        <img src="https://raw.githubusercontent.com/Yousoo68/TQAnivP/refs/heads/main/image1.png" alt="배역 이미지">
+<!-- 인증 레이어 추가 -->
+<div id="authGate">
+    <div class="auth-box">
+        <h2>인증 필요</h2>
+        <p>학번을 입력해주세요.</p>
+        <div class="auth-input-wrap">
+            <input type="text" id="authInput" class="auth-input" placeholder=" " maxlength="8" inputmode="numeric">
+            <button id="authBtn" class="auth-btn">확인</button>
+        </div>
     </div>
 </div>
 
-<div class="scene-popup" id="scenePopup">
-
-    <div class="popup-title">
-        이동할 씬 선택
+<!-- 본문 전체 감싸는 콘텐츠 박스 (기본 숨김) -->
+<div id="mainContent">
+    <div class="top-ui">
+        <button class="control-btn panel-trigger-btn" id="panelTriggerBtn">⁝</button>
+        <div class="top-panel-menu" id="topPanelMenu">
+            <a href="https://www.youtube.com/watch?v=1xDONKYdORE" target="_blank" class="control-btn">원본 보기</a>
+            <button class="control-btn" id="castBtn">배역 보기</button>
+            <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn">사운드트랙 다운로드</a>
+            <button class="control-btn whisper-btn" id="whisperBtn">귓속말 대사</button>
+            <button class="control-btn location-btn" id="locationBtn">타 장소 촬영</button>
+        </div>
     </div>
 
-    <button class="popup-btn" data-target="scene1">
-        Scene 1 이동
-    </button>
-
-    <button class="popup-btn" data-target="scene5">
-        Scene 5 이동
-    </button>
-
-</div>
-
-<div class="floating-nav">
-    <div class="floating-sub-menu" id="floatingSubMenu">
-        <button class="floating-btn" id="scrollTopBtn" title="맨 위로">🔼</button>
-        <button class="floating-btn" id="scrollBottomBtn" title="맨 아래로">🔽</button>
-        <button class="floating-btn" id="allScenesBtn" style="font-size: 13px; font-weight: 900;" title="씬 이동">Scene</button>
+    <div class="cast-modal" id="castModal">
+        <div class="cast-modal-content">
+            <span class="cast-modal-close" id="castModalClose">&times;</span>
+            <img src="https://raw.githubusercontent.com/Yousoo68/TQAnivP/refs/heads/main/image1.png" alt="배역 이미지">
+        </div>
     </div>
-    <button class="floating-btn floating-trigger-btn" id="floatingTriggerBtn">☰</button>
-</div>
 
-<div class="full-scene-popup" id="fullScenePopup">
-    <div class="popup-title" style="border-bottom: 1px solid #444; padding-bottom: 8px;">씬 바로가기</div>
-    <button class="popup-btn full-popup-item" data-target="scene1">Scene 1</button>
-    <button class="popup-btn full-popup-item" data-target="scene2">Scene 2</button>
-    <button class="popup-btn full-popup-item" data-target="scene3">Scene 3</button>
-    <button class="popup-btn full-popup-item" data-target="scene4">Scene 4</button>
-    <button class="popup-btn full-popup-item" data-target="scene5">Scene 5</button>
-    <button class="popup-btn full-popup-item" data-target="scene6">Scene 6</button>
-    <button class="popup-btn full-popup-item" data-target="scene7">Scene 7</button>
-    <button class="popup-btn full-popup-item" data-target="scene8">Scene 8</button>
-</div>
-
-<div class="container">
-
-<section class="scene location-highlight" id="scene1">
-
-<div class="scene-title"># Scene 1</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 어 왔어? 아니 다른게 아니라 오늘 뭐 저녁에 약속있어? 밥이라도 같이 먹을까 해서</div>
-
-<div class="dialogue"><span class="speaker">세연 :</span> 아 오늘 저 남자친구 만나러 가기로 해서... 죄송합니다</div>
-
-<div class="dialogue"><span class="speaker">남 :</span> 아 너 남자친구가 있었구나?</div>
-
-<div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 학교 사람이야?</div>
-
-<div class="dialogue"><span class="speaker">세연 :</span> 네 맞아요</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 같은과?</div>
-
-<div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 아ㅏㅏ 너무 좋네 어? 원래 그렇게 cc도 하고 대학 생활 즐기는 거지 헤어지지말고 오래오래 사귀어</div>
-
-<div class="dialogue"><span class="speaker">세연 :</span> 네, 감사합니다 선배님!</div>
-
-</section>
-
-<section class="scene" id="scene2">
-
-<div class="scene-title"># Scene 2</div>
-
-<div class="dialogue effect">(세연이를 클로즈업으로 시작 후 다른 후배들 나 나오도록 롱샷)</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 너네 오늘 왜 모이라고 한 줄 알아?</div>
-
-<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 죄송한게 아니라 물어보는 거잖아</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 너네 혹시 학교에서 연애하는 애들 있냐?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너네 뭐 연애하려고 학교 들어왔어?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> cc는 3학년 때부터인 거 몰라?</div>
-
-<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
-
-<div class="dialogue red-text"><span class="speaker">유수 :</span> 나도 외로워!!!!</div>
-
-<div class="dialogue effect">[이명 소리]</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 목소리 너무 커.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 조금 작게 말해.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리 쏘리</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> (전화벨이 울린다) 예 선배님</div>
-
-<div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아니 세연이가 전화를 안받아서 지금 1학년 수업 끝나지 않았냐?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아... 아마 끝났을텐데... 제가 한 번 전화해볼까요?</div>
-
-<div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아 됐어됐어</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 넵 선배님 들어가세요.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> (전화 끊고) 하... 안세연 열외.</div>
-
-</section>
-
-<section class="scene" id="scene3">
-
-<div class="scene-title"># Scene 3</div>
-
-<div class="dialogue effect">(잠깐의 침묵)</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아무튼 니네 요새 진짜 말 많이 나와</div>
-
-<div class="dialogue effect">[휴대폰 알람소리]</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야. 집합하는데 핸드폰 벨소리 누구냐?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 집합하는데 핸드폰 켜는게 말이돼?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 어떤 새끼야 빨리 나와!</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 미안 내꺼야 쏘리.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 핸드폰 무음 해놔..</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 오케이</div>
-
-</section>
-
-<section class="scene" id="scene4">
-
-<div class="scene-title"># Scene 4</div>
-
-<div class="dialogue"><span class="speaker">대수 :</span> 야 너 뭐냐 왜 선글라스 끼고 있냐</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 죄송합니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 너 놀러왔냐?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 뭐 양양비치 왔어?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 선글라스를 왜 끼고 있어</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 제가 쌍수를 해서....</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 쌍...쌍수했다고?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 예.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야, 아무리 그래도 집합하는데, 선글라스 끼고 있으면 어떡해?</div>
-
-<div class="dialogue red-text"><span class="speaker">유수 :</span> 네가 김보성이야아??!!</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아씨.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너 김장훈이야? 소리를 왜 이렇게 질러?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아, 작게 말해. 다 들린다고.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야, 선글라스.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 예 선배임</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너 진짜 아까부터 졸라 마음에 안 들거든, 너 너 따라와.</div>
-
-</section>
-
-<section class="scene location-highlight" id="scene5">
-
-<div class="scene-title"># Scene 5</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너 쌍수 어디서 했어?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 예?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아냐 혼내는 거 아니야, 편하게 편하게 편하게.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아니, 나도 이번에 쌍수 하려고 하거든.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 한번 봐봐. (유수가 선글라스를 벗어 눈을 보여준 뒤) 속쌍이야? 비포 사진 있어?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 보여주며) 아..네.. 여기..</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 오.. 좋네~ 어디서 했어?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 켜서 화면을 보여주며) 강남언니에서 알아보고 했습니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아 여기 괜찮아? 비싼 거 아니야?</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 아닙니다. 여기 대학생 상대로 프로모션 이벤트도 진행하고, 최저가 순으로 쌍수, 눈매교정, 트임, 눈밑지방재배치까지 받을 수 있습니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 괜찮네~</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 다른 어플에 비해서 투명한 가격 정보와 풍부한 리얼 후기, 앱 전용 할인 혜택으로 정가 대비 최대 40%까지 할인 받을 수 있으니까 알아보시면 될 것 같습니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 진짜 고맙다. 다음에 내가 맛있는ㄱ</div>
-
-<div class="dialogue"><span class="speaker">대수 :</span> 야 뭐해? 언제 와?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> (뺨을 때리고나서) 조심해 진짜.</div>
-
-</section>
-
-<section class="scene" id="scene6">
-
-<div class="scene-title"># Scene 6</div>
-
-<div class="dialogue effect">(현수가 후배들을 슥 훑고)</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 너ㄴ</div>
-
-<div class="dialogue"><span class="speaker">선일 :</span> (급하게 뛰어오며) 죄송합니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야! 너 왜 이제 오냐?</div>
-
-<div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 묻잖아. 왜 이제 오냐고</div>
-
-<div class="dialogue"><span class="speaker">선일 :</span> 깜빡했습니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 이 새끼 명품도 입었네? 명품은 2학년때부터인거 몰라?</div>
-
-<div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 너네가 지금 헷갈리는 거 같은데.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 다시 한번 말해 줄게. 1학년 명품 금지. 모자 금지. 슬리퍼 금지.</div>
-
-<div class="dialogue red-text"><span class="speaker">유수 :</span> 그냥 씨바 다 금지이!!!!</div>
-
-<div class="dialogue effect">[이명 소리]</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너 tlqkf 소리 지르는 거 금지.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리..</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> tlqkf 다 들린다고.</div>
-
-<div class="dialogue"><span class="speaker">유수 :</span> 쏘리. 쏘리.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 아;;</div>
-
-</section>
-
-<section class="scene" id="scene7">
-
-<div class="scene-title"># Scene 7</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 그리고 너네 말 졸라 많이 나와.</div>
-
-<div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 이번 편집 수업 때 늦어 가지고 교수님한테 혼난 새끼 누구냐?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 누구냐고!</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 아 그거 나야</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너야..?</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 어..</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 진짜 지각하지 마.</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> 쏘리</div>
-
-</section>
-
-<section class="scene" id="scene8">
-
-<div class="scene-title"># Scene 8</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야 다 눈감아</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 너네 뒤에서 내 욕한 새끼 누구야?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 나와</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 다 알고 있으니까 나와라. 진짜 누구야?</div>
-
-<div class="whisper-highlight" id="whisperTarget">
-
-<div class="dialogue"><span class="speaker">대수 :</span> 야 누군데?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 몰라.</div>
-
-<div class="dialogue"><span class="speaker">대수 :</span> 근데 왜 안다고 해?</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 그냥 떠보는 거야.</div>
-
-<div class="dialogue"><span class="speaker">대수 :</span> 아ㅏ 오케이 오케이.</div>
-
-</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야~다 알고 있는데 끝까지 손 안 들겠다고.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 야, 진짜 마지막 기회 준다. 내 욕한 새끼 누구야? 손 들어.</div>
-
-<div class="dialogue"><span class="speaker">현수 :</span> 진짜 마지막 기회다. 손 들어.</div>
-
-<div class="dialogue effect">(카메라 앵글이 도균이 쪽으로 이동되며)</div>
-
-<div class="dialogue"><span class="speaker">도균 :</span> (손을 들며) 미안..</div>
-
-<div class="dialogue red-text"><span class="speaker">현수 :</span> 야,이 tlqkf롬아</div>
-
-</section>
-
+    <div class="scene-popup" id="scenePopup">
+        <div class="popup-header">
+            <div class="popup-title">이동할 씬 선택</div>
+            <span class="popup-close-btn" id="popupCloseBtn">&times;</span>
+        </div>
+        <button class="popup-btn" data-target="scene1">Scene 1 이동</button>
+        <button class="popup-btn" data-target="scene5">Scene 5 이동</button>
+    </div>
+
+    <div class="floating-nav">
+        <div class="floating-sub-menu" id="floatingSubMenu">
+            <button class="floating-btn" id="scrollTopBtn" title="맨 위로">︿</button>
+            <button class="floating-btn" id="scrollBottomBtn" title="맨 아래로">﹀</button>
+            <button class="floating-btn" id="allScenesBtn" style="font-size: 13px; font-weight: 900;" title="씬 이동">Scene</button>
+        </div>
+        <button class="floating-btn floating-trigger-btn" id="floatingTriggerBtn">☰</button>
+    </div>
+
+    <div class="full-scene-popup" id="fullScenePopup">
+        <div class="popup-title" style="border-bottom: 1px solid #444; padding-bottom: 8px;">씬 바로가기</div>
+        <button class="popup-btn full-popup-item" data-target="scene1">Scene 1</button>
+        <button class="popup-btn full-popup-item" data-target="scene2">Scene 2</button>
+        <button class="popup-btn full-popup-item" data-target="scene3">Scene 3</button>
+        <button class="popup-btn full-popup-item" data-target="scene4">Scene 4</button>
+        <button class="popup-btn full-popup-item" data-target="scene5">Scene 5</button>
+        <button class="popup-btn full-popup-item" data-target="scene6">Scene 6</button>
+        <button class="popup-btn full-popup-item" data-target="scene7">Scene 7</button>
+        <button class="popup-btn full-popup-item" data-target="scene8">Scene 8</button>
+    </div>
+
+    <div class="container">
+        <section class="scene location-highlight" id="scene1">
+            <div class="scene-title"># Scene 1</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 어 왔어? 아니 다른게 아니라 오늘 뭐 저녁에 약속있어? 밥이라도 같이 먹을까 해서</div>
+            <div class="dialogue"><span class="speaker">세연 :</span> 아 오늘 저 남자친구 만나러 가기로 해서... 죄송합니다</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 아 너 남자친구가 있었구나?</div>
+            <div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 학교 사람이야?</div>
+            <div class="dialogue"><span class="speaker">세연 :</span> 네 맞아요</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 같은과?</div>
+            <div class="dialogue"><span class="speaker">세연 :</span> 네..</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 아ㅏㅏ 너무 좋네 어? 원래 그렇게 cc도 하고 대학 생활 즐기는 거지 헤어지지말고 오래오래 사귀어</div>
+            <div class="dialogue"><span class="speaker">세연 :</span> 네, 감사합니다 선배님!</div>
+        </section>
+
+        <section class="scene" id="scene2">
+            <div class="scene-title"># Scene 2</div>
+            <div class="dialogue effect">(세연이를 클로즈업으로 시작 후 다른 후배들 나 나오도록 롱샷)</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 너네 오늘 왜 모이라고 한 줄 알아?</div>
+            <div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 죄송한게 아니라 물어보는 거잖아</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 너네 혹시 학교에서 연애하는 애들 있냐?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너네 뭐 연애하려고 학교 들어왔어?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> cc는 3학년 때부터인 거 몰라?</div>
+            <div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다!</div>
+            <div class="dialogue red-text"><span class="speaker">유수 :</span> 나도 외로워!!!!</div>
+            <div class="dialogue effect">[이명 소리]</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 목소리 너무 커.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 조금 작게 말해.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리 쏘리</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> (전화벨이 울린다) 예 선배님</div>
+            <div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아니 세연이가 전화를 안받아서 지금 1학년 수업 끝나지 않았냐?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아... 아마 끝났을텐데... 제가 한 번 전화해볼까요?</div>
+            <div class="dialogue"><span class="speaker">(남친 목소리) :</span> 아 됐어됐어</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 넵 선배님 들어가세요.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> (전화 끊고) 하... 안세연 열외.</div>
+        </section>
+
+        <section class="scene" id="scene3">
+            <div class="scene-title"># Scene 3</div>
+            <div class="dialogue effect">(잠깐의 침묵)</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아무튼 니네 요새 진짜 말 많이 나와</div>
+            <div class="dialogue effect">[휴대폰 알람소리]</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야. 집합하는데 핸드폰 벨소리 누구냐?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 집합하는데 핸드폰 켜는게 말이돼?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 어떤 새끼야 빨리 나와!</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 미안 내꺼야 쏘리.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 핸드폰 무음 해놔..</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 오케이</div>
+        </section>
+
+        <section class="scene" id="scene4">
+            <div class="scene-title"># Scene 4</div>
+            <div class="dialogue"><span class="speaker">대수 :</span> 야 너 뭐냐 왜 선글라스 끼고 있냐</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 죄송합니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 너 놀러왔냐?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 뭐 양양비치 왔어?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 선글라스를 왜 끼고 있어</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 제가 쌍수를 해서....</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 쌍...쌍수했다고?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 예.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야, 아무리 그래도 집합하는데, 선글라스 끼고 있으면 어떡해?</div>
+            <div class="dialogue red-text"><span class="speaker">유수 :</span> 네가 김보성이야아??!!</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아씨.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너 김장훈이야? 소리를 왜 이렇게 질러?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아, 작게 말해. 다 들린다고.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야, 선글라스.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 예 선배임</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너 진짜 아까부터 졸라 마음에 안 들거든, 너 너 따라와.</div>
+        </section>
+
+        <section class="scene location-highlight" id="scene5">
+            <div class="scene-title"># Scene 5</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너 쌍수 어디서 했어?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 예?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아냐 혼내는 거 아니야, 편하게 편하게 편하게.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아니, 나도 이번에 쌍수 하려고 하거든.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 한번 봐봐. (유수가 선글라스를 벗어 눈을 보여준 뒤) 속쌍이야? 비포 사진 있어?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 보여주며) 아..네.. 여기..</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 오.. 좋네~ 어디서 했어?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> (핸드폰을 켜서 화면을 보여주며) 강남언니에서 알아보고 했습니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아 여기 괜찮아? 비싼 거 아니야?</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 아닙니다. 여기 대학생 상대로 프로모션 이벤트도 진행하고, 최저가 순으로 쌍수, 눈매교정, 트임, 눈밑지방재배치까지 받을 수 있습니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 괜찮네~</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 다른 어플에 비해서 투명한 가격 정보와 풍부한 리얼 후기, 앱 전용 할인 혜택으로 정가 대비 최대 40%까지 할인 받을 수 있으니까 알아보시면 될 것 같습니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 진짜 고맙다. 다음에 내가 맛있는ㄱ</div>
+            <div class="dialogue"><span class="speaker">대수 :</span> 야 뭐해? 언제 와?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> (뺨을 때리고나서) 조심해 진짜.</div>
+        </section>
+
+        <section class="scene" id="scene6">
+            <div class="scene-title"># Scene 6</div>
+            <div class="dialogue effect">(현수가 후배들을 슥 훑고)</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 너ㄴ</div>
+            <div class="dialogue"><span class="speaker">선일 :</span> (급하게 뛰어오며) 죄송합니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야! 너 왜 이제 오냐?</div>
+            <div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 묻잖아. 왜 이제 오냐고</div>
+            <div class="dialogue"><span class="speaker">선일 :</span> 깜빡했습니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 이 새끼 명품도 입었네? 명품은 2학년때부터인거 몰라?</div>
+            <div class="dialogue"><span class="speaker">선일 :</span> 죄송합니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 너네가 지금 헷갈리는 거 같은데.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 다시 한번 말해 줄게. 1학년 명품 금지. 모자 금지. 슬리퍼 금지.</div>
+            <div class="dialogue red-text"><span class="speaker">유수 :</span> 그냥 씨바 다 금지이!!!!</div>
+            <div class="dialogue effect">[이명 소리]</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너 tlqkf 소리 지르는 거 금지.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리..</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> tlqkf 다 들린다고.</div>
+            <div class="dialogue"><span class="speaker">유수 :</span> 쏘리. 쏘리.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 아;;</div>
+        </section>
+
+        <section class="scene" id="scene7">
+            <div class="scene-title"># Scene 7</div>
+            <div class="dialogue"><span class="speaker">text현수 :</span> 야 그리고 너네 말 졸라 많이 나와.</div>
+            <div class="dialogue"><span class="speaker">다같이 :</span> 죄송합니다.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 이번 편집 수업 때 늦어 가지고 교수님한테 혼난 새끼 누구냐?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 누구냐고!</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 아 그거 나야</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너야..?</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 어..</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 진짜 지각하지 마.</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> 쏘리</div>
+        </section>
+
+        <section class="scene" id="scene8">
+            <div class="scene-title"># Scene 8</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야 다 눈감아</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 너네 뒤에서 내 욕한 새끼 누구야?</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 나와</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 다 알고 있으니까 나와라. 진짜 누구야?</div>
+            <div class="whisper-highlight" id="whisperTarget">
+                <div class="dialogue"><span class="speaker">대수 :</span> 야 누군데?</div>
+                <div class="dialogue"><span class="speaker">현수 :</span> 몰라.</div>
+                <div class="dialogue"><span class="speaker">대수 :</span> 근데 왜 안다고 해?</div>
+                <div class="dialogue"><span class="speaker">현수 :</span> 그냥 떠보는 거야.</div>
+                <div class="dialogue"><span class="speaker">대수 :</span> 아ㅏ 오케이 오케이.</div>
+            </div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야~다 알고 있는데 끝까지 손 안 들겠다고.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 야, 진짜 마지막 기회 준다. 내 욕한 새끼 누구야? 손 들어.</div>
+            <div class="dialogue"><span class="speaker">현수 :</span> 진짜 마지막 기회다. 손 들어.</div>
+            <div class="dialogue effect">(카메라 앵글이 도균이 쪽으로 이동되며)</div>
+            <div class="dialogue"><span class="speaker">도균 :</span> (손을 들며) 미안..</div>
+            <div class="dialogue red-text"><span class="speaker">현수 :</span> 야,이 tlqkf롬아</div>
+        </section>
+    </div>
 </div>
 
 <script>
+// 허용된 학번 및 이름 매핑 객체
+const userMap = {
+    "20261352": "도균",
+    "20261374": "유수",
+    "20261376": "현수",
+    "20261354": "대수",
+    "20261371": "세연",
+    "20261393": "선일"
+};
 
-// 배역 보기 모달 제어 스크립트 추가
-const castBtn = document.getElementById('castBtn');
-const castModal = document.getElementById('castModal');
-const castModalClose = document.getElementById('castModalClose');
+const authGate = document.getElementById('authGate');
+const authInput = document.getElementById('authInput');
+const authBtn = document.getElementById('authBtn');
+const mainContent = document.getElementById('mainContent');
 
-// 배역 보기 클릭 시 오픈
-castBtn.addEventListener('click', () => {
-    castModal.classList.add('active');
+// 입력창 제어: 오직 숫자만 입력받을 수 있도록 필터링
+authInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
 });
 
-// X 버튼 클릭 시 닫기
-castModalClose.addEventListener('click', () => {
-    castModal.classList.remove('active');
-});
+// 인증 확인 로직 함수 (요청 사항 반영 수정 부분)
+function checkAuthentication() {
+    const code = authInput.value.trim();
+    if (userMap[code]) {
+        alert("환영합니다. " + userMap[code] + "님!");
+        authGate.style.display = 'none';
+        mainContent.style.display = 'block';
+    } else {
+        alert("초대받지 않은 방문자입니다.");
+        authInput.value = '';
+        authInput.focus();
+    }
+}
 
-// 모달 바깥 검은 배경 클릭 시 닫기
-castModal.addEventListener('click', (e) => {
-    if (e.target === castModal) {
-        castModal.classList.remove('active');
+// 버튼 클릭 및 엔터키 이벤트 바인딩
+authBtn.addEventListener('click', checkAuthentication);
+authInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        checkAuthentication();
     }
 });
 
+
+// ----------------------------------------------------
+// 기존 스크립트 내용 원본 유지 (수정 및 누락 없음)
+// ----------------------------------------------------
+
+// 유틸리티 함수: 스크롤 이동 전용
+const scrollToTarget = (id) => {
+    const target = document.getElementById(id);
+    if(target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+// 토글 버튼 제어 (상단 패널 & 플로팅 메뉴)
+document.getElementById('panelTriggerBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('topPanelMenu').classList.toggle('active');
+});
+
+document.getElementById('floatingTriggerBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const active = document.getElementById('floatingSubMenu').classList.toggle('active');
+    if(!active) document.getElementById('fullScenePopup').classList.remove('active');
+});
+
+// 모달 제어 (배역 보기)
+const castModal = document.getElementById('castModal');
+document.getElementById('castBtn').addEventListener('click', () => castModal.classList.add('active'));
+document.getElementById('castModalClose').addEventListener('click', () => castModal.classList.remove('active'));
+castModal.addEventListener('click', (e) => { if (e.target === castModal) castModal.classList.remove('active'); });
 
 // 귓속말 버튼
-const whisperBtn = document.getElementById('whisperBtn');
-const whisperTarget = document.getElementById('whisperTarget');
-
 let whisperOn = false;
-
-whisperBtn.addEventListener('click', () => {
-
+document.getElementById('whisperBtn').addEventListener('click', function() {
     whisperOn = !whisperOn;
-
-    whisperBtn.classList.toggle('active');
-
-    whisperTarget.classList.toggle('active');
-
-    if(whisperOn){
-
-        whisperTarget.scrollIntoView({
-            behavior:'smooth',
-            block:'center'
-        });
-
-    }
-
+    this.classList.toggle('active');
+    document.getElementById('whisperTarget').classList.toggle('active');
+    if(whisperOn) scrollToTarget('whisperTarget');
 });
 
-// 타 장소 촬영 버튼
+// 타 장소 촬영 버튼 및 팝업창
 const locationBtn = document.getElementById('locationBtn');
 const scenePopup = document.getElementById('scenePopup');
-
 const locationTargets = document.querySelectorAll('.location-highlight');
-
 let locationOn = false;
 
-// 버튼 클릭
-locationBtn.addEventListener('click', () => {
+function toggleLocation(forceState) {
+    locationOn = typeof forceState === 'boolean' ? forceState : !locationOn;
+    locationBtn.classList.toggle('active', locationOn);
+    scenePopup.classList.toggle('active', locationOn);
+    locationTargets.forEach(scene => scene.classList.toggle('active', locationOn));
+}
+locationBtn.addEventListener('click', () => toggleLocation());
+document.getElementById('popupCloseBtn').addEventListener('click', (e) => { e.stopPropagation(); toggleLocation(false); });
 
-    // OFF → ON
-    if(!locationOn){
-
-        locationOn = true;
-
-        locationBtn.classList.add('active');
-
-        locationTargets.forEach(scene => {
-            scene.classList.add('active');
-        });
-
-        scenePopup.classList.add('active');
-
-    }
-
-    // ON → OFF
-    else{
-
-        locationOn = false;
-
-        locationBtn.classList.remove('active');
-
-        locationTargets.forEach(scene => {
-            scene.classList.remove('active');
-        });
-
-        scenePopup.classList.remove('active');
-
-    }
-
-});
-
-// 상단 선택창 이동 (Scene 1, Scene 5 전용)
-document.querySelectorAll('.popup-btn:not(.full-popup-item)').forEach(btn => {
-
+// 씬 이동 버튼 통합 처리 (상단 팝업 & 하단 전체 팝업)
+document.querySelectorAll('.popup-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-
-        const target = document.getElementById(btn.dataset.target);
-
-        target.scrollIntoView({
-            behavior:'smooth',
-            block:'center'
-        });
-
-    });
-
-});
-
-
-/* 스크롤 및 플로팅 네비게이션 스크립트 */
-
-const floatingTriggerBtn = document.getElementById('floatingTriggerBtn');
-const floatingSubMenu = document.getElementById('floatingSubMenu');
-const scrollTopBtn = document.getElementById('scrollTopBtn');
-const scrollBottomBtn = document.getElementById('scrollBottomBtn');
-const allScenesBtn = document.getElementById('allScenesBtn');
-const fullScenePopup = document.getElementById('fullScenePopup');
-
-// ☰ 트리거 버튼 토글 연동
-floatingTriggerBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    floatingSubMenu.classList.toggle('active');
-    
-    if(!floatingSubMenu.classList.contains('active')) {
-        fullScenePopup.classList.remove('active');
-    }
-});
-
-// 🔼 버튼 : 맨 위로 스크롤
-scrollTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-});
-
-// 🔽 버튼 : 맨 아래로 스크롤
-scrollBottomBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-    });
-});
-
-// Scene 버튼 : 세로 나열형 팝업창 토글
-allScenesBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    fullScenePopup.classList.toggle('active');
-});
-
-// 하단 팝업창 내에서 특정 씬 클릭 시 책갈피 이동 및 창 닫기
-document.querySelectorAll('.full-popup-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const target = document.getElementById(btn.dataset.target);
-        if(target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-            fullScenePopup.classList.remove('active');
-            floatingSubMenu.classList.remove('active');
+        scrollToTarget(btn.dataset.target);
+        if(btn.classList.contains('full-popup-item')) {
+            document.getElementById('fullScenePopup').classList.remove('active');
+            document.getElementById('floatingSubMenu').classList.remove('active');
         }
     });
 });
 
-// 바탕화면 아무 곳이나 클릭 시 열려있던 하단 메뉴들 자동 닫기
-document.addEventListener('click', (e) => {
-    if(!e.target.closest('.floating-nav') && !e.target.closest('#fullScenePopup')) {
-        floatingSubMenu.classList.remove('active');
-        fullScenePopup.classList.remove('active');
-    }
+// 상단/하단 스크롤
+document.getElementById('scrollTopBtn').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+document.getElementById('scrollBottomBtn').addEventListener('click', () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }));
+
+// Scene 버튼 토글
+document.getElementById('allScenesBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('fullScenePopup').classList.toggle('active');
 });
 
+// 바깥 영역 클릭 시 닫기 통합
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.floating-nav') && !e.target.closest('#fullScenePopup')) {
+        document.getElementById('floatingSubMenu').classList.remove('active');
+        document.getElementById('fullScenePopup').classList.remove('active');
+    }
+    if(!e.target.closest('.top-ui') && !e.target.closest('#scenePopup')) {
+        document.getElementById('topPanelMenu').classList.remove('active');
+    }
+});
 </script>
-
 </body>
 </html>
