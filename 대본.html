@@ -46,6 +46,10 @@ body{
     background:#202020;
     transition:0.25s;
     box-shadow:0 0 12px rgba(255,255,255,0.15);
+    text-decoration: none; /* 링크 버튼용 기본선 제거 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .control-btn:hover{
@@ -189,17 +193,113 @@ body{
     background:rgba(255,40,40,0.05);
 }
 
+/* 우측 하단 플로팅 네비게이션 UI */
+.floating-nav {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.floating-sub-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.floating-sub-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.floating-btn {
+    border: none;
+    cursor: pointer;
+    width: 55px; /* 글자가 완전히 들어가도록 크기 소폭 조절 */
+    height: 55px;
+    border-radius: 55px;
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    background: #202020;
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s;
+}
+
+.floating-btn:hover {
+    transform: translateY(-2px);
+    background: #333;
+}
+
+.floating-trigger-btn {
+    font-size: 24px;
+    background: #f4f4f4;
+    color: #111;
+    box-shadow: 0 0 15px rgba(255,255,255,0.4);
+}
+
+.floating-trigger-btn:hover {
+    background: white;
+}
+
+/* 하단 씬 전체 네비게이션 팝업 */
+.full-scene-popup {
+    position: fixed;
+    bottom: 95px;
+    right: 95px;
+    width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #1f1f1f;
+    border: 2px solid #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    z-index: 999999999;
+    display: none;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.full-scene-popup.active {
+    display: block;
+}
+
+/* 스크롤바 커스텀 */
+.full-scene-popup::-webkit-scrollbar {
+    width: 6px;
+}
+.full-scene-popup::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
 @media(max-width:768px){
 
     .top-ui{
         top:12px;
         right:12px;
-        /* flex-direction: column; 삭제 -> 모바일에서도 항상 가로 정렬 유지 */
+        gap:8px;
+    }
+
+    .control-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+        border-radius: 10px;
     }
 
     .scene-popup{
-        /* 버튼이 가로로 배치되므로 팝업의 top 시작 위치를 낮춰서 겹침 방지 */
-        top:82px; 
+        top:72px; 
         right:12px;
     }
 
@@ -211,6 +311,17 @@ body{
         font-size:17px;
     }
 
+    .floating-nav {
+        bottom: 16px;
+        right: 16px;
+    }
+    
+    .full-scene-popup {
+        bottom: 85px;
+        right: 16px;
+        width: 200px;
+    }
+
 }
 
 </style>
@@ -219,6 +330,10 @@ body{
 <body>
 
 <div class="top-ui">
+
+    <a href="https://yousoo68.github.io/TQAnivP/다운로드.html" class="control-btn" id="downloadBtn">
+        사운드트랙 다운로드
+    </a>
 
     <button class="control-btn whisper-btn" id="whisperBtn">
         귓속말 대사
@@ -244,6 +359,27 @@ body{
         Scene 5 이동
     </button>
 
+</div>
+
+<div class="floating-nav">
+    <div class="floating-sub-menu" id="floatingSubMenu">
+        <button class="floating-btn" id="scrollTopBtn" title="맨 위로">🔼</button>
+        <button class="floating-btn" id="scrollBottomBtn" title="맨 아래로">🔽</button>
+        <button class="floating-btn" id="allScenesBtn" style="font-size: 13px; font-weight: 900;" title="씬 이동">Scene</button>
+    </div>
+    <button class="floating-btn floating-trigger-btn" id="floatingTriggerBtn">☰</button>
+</div>
+
+<div class="full-scene-popup" id="fullScenePopup">
+    <div class="popup-title" style="border-bottom: 1px solid #444; padding-bottom: 8px;">씬 바로가기</div>
+    <button class="popup-btn full-popup-item" data-target="scene1">Scene 1</button>
+    <button class="popup-btn full-popup-item" data-target="scene2">Scene 2</button>
+    <button class="popup-btn full-popup-item" data-target="scene3">Scene 3</button>
+    <button class="popup-btn full-popup-item" data-target="scene4">Scene 4</button>
+    <button class="popup-btn full-popup-item" data-target="scene5">Scene 5</button>
+    <button class="popup-btn full-popup-item" data-target="scene6">Scene 6</button>
+    <button class="popup-btn full-popup-item" data-target="scene7">Scene 7</button>
+    <button class="popup-btn full-popup-item" data-target="scene8">Scene 8</button>
 </div>
 
 <div class="container">
@@ -274,7 +410,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene2">
 
 <div class="scene-title"># Scene 2</div>
 
@@ -320,7 +456,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene3">
 
 <div class="scene-title"># Scene 3</div>
 
@@ -344,7 +480,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene4">
 
 <div class="scene-title"># Scene 4</div>
 
@@ -422,7 +558,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene6">
 
 <div class="scene-title"># Scene 6</div>
 
@@ -464,7 +600,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene7">
 
 <div class="scene-title"># Scene 7</div>
 
@@ -488,7 +624,7 @@ body{
 
 </section>
 
-<section class="scene">
+<section class="scene" id="scene8">
 
 <div class="scene-title"># Scene 8</div>
 
@@ -600,8 +736,8 @@ locationBtn.addEventListener('click', () => {
 
 });
 
-// 선택창 이동
-document.querySelectorAll('.popup-btn').forEach(btn => {
+// 상단 선택창 이동 (Scene 1, Scene 5 전용)
+document.querySelectorAll('.popup-btn:not(.full-popup-item)').forEach(btn => {
 
     btn.addEventListener('click', () => {
 
@@ -614,6 +750,71 @@ document.querySelectorAll('.popup-btn').forEach(btn => {
 
     });
 
+});
+
+
+/* 스크롤 및 플로팅 네비게이션 스크립트 */
+
+const floatingTriggerBtn = document.getElementById('floatingTriggerBtn');
+const floatingSubMenu = document.getElementById('floatingSubMenu');
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+const allScenesBtn = document.getElementById('allScenesBtn');
+const fullScenePopup = document.getElementById('fullScenePopup');
+
+// ☰ 트리거 버튼 토글 연동
+floatingTriggerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    floatingSubMenu.classList.toggle('active');
+    
+    if(!floatingSubMenu.classList.contains('active')) {
+        fullScenePopup.classList.remove('active');
+    }
+});
+
+// 🔼 버튼 : 맨 위로 스크롤
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// 🔽 버튼 : 맨 아래로 스크롤
+scrollBottomBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
+});
+
+// Scene 버튼 : 세로 나열형 팝업창 토글
+allScenesBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fullScenePopup.classList.toggle('active');
+});
+
+// 하단 팝업창 내에서 특정 씬 클릭 시 책갈피 이동 및 창 닫기
+document.querySelectorAll('.full-popup-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        if(target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            fullScenePopup.classList.remove('active');
+            floatingSubMenu.classList.remove('active');
+        }
+    });
+});
+
+// 바탕화면 아무 곳이나 클릭 시 열려있던 하단 메뉴들 자동 닫기
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.floating-nav') && !e.target.closest('#fullScenePopup')) {
+        floatingSubMenu.classList.remove('active');
+        fullScenePopup.classList.remove('active');
+    }
 });
 
 </script>
